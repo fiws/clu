@@ -115,7 +115,7 @@ var use = exports.use = function(module){
 exports.restart = function(cb){
 	if (!_.isFunction(cb)) cb = function(){};
 
-	// restart workers one after one
+	// restart workers one after another
 	async.eachSeries(_.values(cluster.workers), function(worker, cb){
 		var gapFiller = cluster.fork();
 		worker.send('close');
@@ -166,7 +166,7 @@ var increaseWorkers = exports.increaseWorkers = function(num, cb){
 		if (err && cb) return cb(err); // TODO: Error handling here
 		else if (err) throw err;
 
-		logger.info(workers.length + " workers listening.".green.bold);
+		logger.info(workers.length + " new workers listening.".green.bold);
 		if (cb) cb(null, workers);
 	});
 };
