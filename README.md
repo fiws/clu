@@ -54,3 +54,15 @@ Use --force to kill them
 
 
 ![](http://i.imgur.com/E5l57ct.png)
+
+## Plugins
+Plugins can be used like this:
+``` JavaScript
+	var cluAwesome = require("clu-awesome");
+	clu.use(cluAwesome());
+	clu.use(clu.repl());
+```
+
+*Built in:*
+
+* clu.repl() - a repl interface 
