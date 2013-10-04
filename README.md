@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/fiws/clu.png?branch=master)](https://travis-ci.org/fiws/clu)
+
 clu
 ========
 cluster without ster... name might change
