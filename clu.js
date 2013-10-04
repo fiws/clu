@@ -11,7 +11,7 @@ var cli = false;
 require('colors');
 
 // built in plugins
-exports.telnet = require('./lib/telnet');
+exports.repl = require('./lib/repl');
 
 exports.createCluster = function(options){
 

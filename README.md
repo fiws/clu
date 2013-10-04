@@ -8,6 +8,7 @@ Features:
 
 * zero downtime restarts
 * restarts workers one after another (to prevent performance hit)
+* add or remove workers on the fly
 
 ## Usage
 1. `npm install --save clu`
@@ -22,7 +23,7 @@ Features:
 		cli: true
 	});
 
-	clu.use(clu.telnet());
+	clu.use(clu.repl());
 ```
 3. start your cluster via `node server start` or `node server &` (if you have cli disabled)
 
@@ -40,6 +41,10 @@ Will stop all workers and the master
 ### reload
 Respawns all workers one after another
 
+### repl
+Only works if you `clu.use(clu.repl())`
+Throws you in a repl.
+
 ### scaleup <x>
 Start x number of workers
 
@@ -47,8 +52,5 @@ Start x number of workers
 Stop x number of workers
 Use --force to kill them
 
-### repl
-Only works if you `clu.use(clu.repl())`
-Throws you in a repl.
 
 ![](http://i.imgur.com/E5l57ct.png)

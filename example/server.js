@@ -6,4 +6,4 @@ clu.createCluster({
 
 });
 
-clu.use(clu.telnet());
+clu.use(clu.repl());
