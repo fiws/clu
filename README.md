@@ -20,11 +20,13 @@ Features:
 	var clu = require("clu");
 
 	clu.createCluster({
+		exec: "./app.js",
 		workers: 2,
 		silent: false,
 		silentWorkers: true,
 		cli: true
 	});
+	// short: clu.createCluster("./app.js");
 
 	clu.use(clu.repl());
 ```
@@ -56,6 +58,7 @@ Start x number of workers
 ### scaledown <x>
 Stop x number of workers
 Use --force to kill them
+
 
 
 ## Plugins
