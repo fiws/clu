@@ -1,3 +1,4 @@
+var fs = require('fs');
 var dnode = require('dnode');
 var net = require('net');
 var child_process = require('child_process');
@@ -115,5 +116,6 @@ d.on('remote', function (master) {
 
 });
 
+if (!fs.existsSync('./.clu/dnode.sock')) throw new Error("master is not running or cli is disabled");
 var socket = net.connect('./.clu/dnode.sock');
 socket.pipe(d).pipe(socket);
