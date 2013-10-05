@@ -1,12 +1,12 @@
-[![Build Status](https://travis-ci.org/fiws/clu.png?branch=master)](https://travis-ci.org/fiws/clu)
-
 clu
 ========
-cluster without ster... name might change
+*cluster without ster... name might change*
 
 A cluster manager inspired by [cluster](https://github.com/LearnBoost/cluster).
 
-Features:
+[![Build Status](https://travis-ci.org/fiws/clu.png?branch=master)](https://travis-ci.org/fiws/clu)
+
+**Features:**
 
 * zero downtime restarts
 * restarts workers one after another (to prevent performance hit)
@@ -36,7 +36,8 @@ Features:
 ## Commands
 
 usage: `node server [options] <verb>`
-these only work if you have the 'cli' option enabled.
+
+These only work if you have the 'cli' option enabled.
 
 ### repl
 Only works if you `clu.use(clu.repl())`
@@ -64,11 +65,11 @@ Use --force to kill them
 ## Plugins
 Plugins can be used like this:
 ``` JavaScript
-	var cluAwesome = require("clu-awesome");
-	clu.use(cluAwesome());
-	clu.use(clu.repl());
+var cluAwesome = require("clu-awesome");
+clu.use(cluAwesome());
+clu.use(clu.repl());
 ```
 
-*Built in:*
+**Built in:**
 
 * clu.repl() - a repl interface 

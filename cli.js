@@ -97,11 +97,20 @@ d.on('remote', function (master) {
 			cb();
 		}
 
-		console.log("scaling " + "down".bold +  " by " + value);
-		master.decreaseWorkers(value, function(err){
-			if(err) console.log("ERROR: %s".red, err.message);
-			cb();
-		});
+		if (program.force){
+			console.log("killing " + value + " workers");
+			// master.decreaseWorkers.force does not work. i blame dnode
+			master.decreaseWorkersForce(value, function(err){
+				if(err) console.log("ERROR: %s".red, err.message);
+				cb();
+			});
+		} else {
+			console.log("scaling " + "down".bold +  " by " + value);
+			master.decreaseWorkers(value, function(err){
+				if(err) console.log("ERROR: %s".red, err.message);
+				cb();
+			});
+		}
 
 	};
 
