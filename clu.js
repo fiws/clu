@@ -3,7 +3,9 @@ var fs = require('fs');
 var _ = require('lodash');
 var cluster = require('cluster');
 var async = require('async');
+
 var logger = require('./lib/logger'); // own crappy logger
+exports.logger = logger; // expose it
 
 
 var cli = false;
