@@ -67,6 +67,7 @@ exports.createCluster = function(options){
 
 	// for cli
 	if (options.cli === true) use(require('./lib/dnode'));
+	if (options.cli === true) use(require('./lib/protocol'));
 
 
 	// Finally: Fork the workers
@@ -97,7 +98,7 @@ exports.createCluster = function(options){
 	process.on('uncaughtExeption', function(err){
 		console.log(err);
 		console.log(err.stack);
-		process.exit();
+		process.exit(1);
 	});
 
 	// Ctrl + C
