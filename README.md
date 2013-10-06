@@ -34,14 +34,14 @@ clu.createCluster({
 
 clu.use(clu.repl());
 ```
-3. Start your cluster via `node server start` or `node server &` (if you have cli disabled)
+Start your cluster with `node server start` or `node server &` (if you have cli disabled)
 
 
 ## Commands
 
 **`node server --help`** will output all available commands
 
-These only work if you have the 'cli' option enabled.
+These only work if you have the 'cli' option enabled. (server is the file where you call `clu.createCluster()`)
 
 ### repl
 Only works if you `clu.use(clu.repl())`
@@ -94,6 +94,9 @@ Restarts the master process. Calls the callback when all workers disconnected
 #### clu.stop(cb)
 Stops the master process and all workers. Callback gets called when all workers disconnect.
 
+#### clu.stopWorkers(cb)
+Stops the all workers but not the master process. Callback gets called when all workers disconnect.
+
 
 #### clu.increaseWorkers(num, cb)
 Spawns x amount of new workers. Will cb after all new workers are listening.
@@ -120,7 +123,14 @@ clu.use(clu.repl());
 
 **Built in:**
 
-* clu.repl() - a repl interface 
+* clu.repl() - a repl interface
+
+**Own:**
+
+* [clu-dnode](https://github.com/fiws/clu-dnode) - dnode interface for clu
+
+**3rd Party:**
+contact me if you create any :)
 
 
 ## Licence

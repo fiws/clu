@@ -1,6 +1,6 @@
 {
   "name": "clu",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Run, stop, restart & manage your node cluster.",
   "main": "clu.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "forever",
     "zero downtime"
   ],
-  "author": "Filip Weiss",
+  "author": "Filip Weiss <me@fiws.net>",
   "license": "MIT",
   "dependencies": {
     "colors": "~0.6.2",

@@ -32,8 +32,16 @@ exports.createCluster = function(options){
 
 	// get the config dir (.clu and the absolute path of the exec)
 	var path = require('path');
+
 	var cd = exports.dir = path.dirname(process.argv[1]) + "/.clu/";
-	options.exec = path.resolve(path.dirname(process.argv[1]) + "/" + options.exec);
+
+	// absolute path (?)
+	if (options.exec[0] === "/"){
+		cd = path.dirname(options.exec) + "/.clu/";
+	} else {
+		options.exec = path.resolve(path.dirname(process.argv[1]) + "/" + options.exec);
+	}
+	if (!fs.existsSync(options.exec) && !fs.existsSync(options.exec + ".js")) throw new Error(options.exec + " was not found!");
 
 	exports.options = options;
 
@@ -58,7 +66,11 @@ exports.createCluster = function(options){
 
 	process.on('exit', function(){
 		// delete master pid
-		fs.unlinkSync(cd + "pids/master.pid");
+		try {
+			fs.unlinkSync(cd + "pids/master.pid");
+		} catch(e){
+			// whatever...
+		}
 	});
 
 	// Without this it wont delete the master.pid
@@ -231,8 +243,16 @@ exports.stop = function(cb){
 	logger.info("stopping...".blue);
 	cluster.disconnect(function(){
 		if (cb) cb();
-		console.log('disconnected all workers');
+		logger.info('disconnected all workers');
 		process.exit();
+	});
+};
+
+exports.stopWorkers = function(cb){
+	logger.info("stopping...".blue);
+	cluster.disconnect(function(){
+		if (cb) cb();
+		logger.info('disconnected all workers');
 	});
 };
 
