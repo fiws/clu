@@ -4,33 +4,36 @@ clu
 
 A cluster manager inspired by [cluster](https://github.com/LearnBoost/cluster).
 
-[![Build Status](https://travis-ci.org/fiws/clu.png?branch=master)](https://travis-ci.org/fiws/clu)
 
 **Features:**
 
+* built in CLI (optional)
 * zero downtime restarts
 * restarts workers one after another (to prevent performance hit)
 * add or remove workers on the fly
+* uses the node cluster API
+
+> [![Build Status](https://travis-ci.org/fiws/clu.png?branch=master)](https://travis-ci.org/fiws/clu)
 
 
-## Usage
+## Setup
 1. `npm install --save clu`
 2. Create a server.js that starts your app.
 ``` JavaScript
-	var clu = require("clu");
+var clu = require("clu");
 
-	clu.createCluster({
-		exec: "./app.js",
-		workers: 2,
-		silent: false,
-		silentWorkers: true,
-		cli: true
-	});
-	// short: clu.createCluster("./app.js");
+clu.createCluster({
+	exec: "./app.js",
+	workers: 2,
+	silent: false,
+	silentWorkers: true,
+	cli: true
+});
+// short: clu.createCluster("./app.js");
 
-	clu.use(clu.repl());
+clu.use(clu.repl());
 ```
-3. start your cluster via `node server start` or `node server &` (if you have cli disabled)
+3. Start your cluster via `node server start` or `node server &` (if you have cli disabled)
 
 
 ## Commands
@@ -42,7 +45,7 @@ These only work if you have the 'cli' option enabled.
 ### repl
 Only works if you `clu.use(clu.repl())`
 Throws you in a repl.
-![](http://i.imgur.com/E5l57ct.png)
+![](https://i.imgur.com/E5l57ct.png)
 
 ### start
 Will start the server and throw you back into your terminal.
@@ -53,10 +56,10 @@ Will stop all workers and the master.
 ### reload
 Respawns all workers one after another.
 
-### scaleup <x>
+### scaleup <x\>
 Start x number of workers
 
-### scaledown <x>
+### scaledown <x\>
 Stop x number of workers
 Use --force to kill them
 
@@ -73,3 +76,7 @@ clu.use(clu.repl());
 **Built in:**
 
 * clu.repl() - a repl interface 
+
+
+## Licence
+MIT
