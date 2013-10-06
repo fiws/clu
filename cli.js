@@ -12,6 +12,7 @@ var socket = new nssocket.NsSocket();
 var program = require('commander');
 //var inquirer = require('inquirer');
 
+var cluPath = "./.clu";
 if (!fs.existsSync(cluPath + '/clu.sock')) throw new Error("master is not running or cli is disabled");
 
 program
@@ -127,8 +128,6 @@ socket.data("done", function(data){
 	socket.end();
 });
 
-
-var cluPath = "./.clu";
 
 if (!_.contains(process.argv, "--help") && !_.contains(process.argv, "-h")){
 	var commands = _.keys(program._events);
