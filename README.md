@@ -13,13 +13,13 @@ A cluster manager inspired by [cluster](https://github.com/LearnBoost/cluster).
 * add or remove workers on the fly
 * uses the node cluster API
 
-> [![Build Status](https://travis-ci.org/fiws/clu.png?branch=master)](https://travis-ci.org/fiws/clu)
-> ** This is still under development **
+> [![Build Status](https://travis-ci.org/fiws/clu.png?branch=master)](https://travis-ci.org/fiws/clu) This is still under development
 
 
 ## Setup
 1. `npm install --save clu`
 2. Create a server.js that starts your app.
+
 ``` JavaScript
 var clu = require("clu");
 
@@ -75,6 +75,13 @@ Use --force to kill them
 #### clu.createCluster(options)
 Creates a new cluster. Exec option is required.
 
+** Options **
+
+* `workers` - Number of workers, will default to the number of cores
+* `silent` - Boolean: Makes the master & workers silent (default: false)
+* `silentWorkers` - Boolean: If true workers output won't be displayed (default: true)
+* `cli` - Boolean: Enables the CLI. (default: true)
+
 
 #### clu.restart(cb)
 Respawns all workers one after one and calls the callback after all workers have been respawned.
@@ -96,7 +103,7 @@ Spawns x amount of new workers. Will cb after all new workers are listening.
 Stops x amount of workers. Will cb after all workers have disconnected. Will throw if you stop more workers than available or you try to stop all (use `clu.stop()` for that).
 
 #### clu.getWorkers(cb)
-Callbacks with an array of workers.
+Calls back with an array of workers.
 
 
 
