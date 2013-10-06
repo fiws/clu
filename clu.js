@@ -55,8 +55,19 @@ exports.createCluster = function(options){
 		mkdirp.sync(pidsDir);
 	}
 	if (fs.existsSync(pidsDir + "/master.pid")) throw new Error("master seems to be already running");
-	fs.writeFileSync(pidsDir + "/master.pid", process.pid, 'utf8');
 
+	process.on('exit', function(){
+		// delete master pid
+		fs.unlinkSync(cd + "pids/master.pid");
+	});
+
+	// Without this it wont delete the master.pid
+	process.on('uncaughtException', function(err){
+		console.log(err.stack);
+		process.exit(1);
+	});
+
+	fs.writeFileSync(pidsDir + "/master.pid", process.pid, 'utf8');
 
 	// silent workers
 	var clusterOptions = _.clone(options);
@@ -87,18 +98,6 @@ exports.createCluster = function(options){
 		if (worker.suicide === true) return;
 		logger.warn('Worker #%s has disconnected. respawning...'.red, worker.id);
 		cluster.fork();
-	});
-
-	process.on('exit', function(){
-		// delete master pid
-		fs.unlinkSync(cd + "pids/master.pid");
-	});
-
-	// Without this it wont delete the master.pid
-	process.on('uncaughtExeption', function(err){
-		console.log(err);
-		console.log(err.stack);
-		process.exit(1);
 	});
 
 	// Ctrl + C
