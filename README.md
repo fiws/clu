@@ -7,6 +7,8 @@ A cluster manager inspired by [cluster](https://github.com/LearnBoost/cluster).
 
 **Features:**
 
+![](https://i.imgur.com/k6r888c.png)
+
 * built in CLI (optional)
 * zero downtime restarts
 * restarts workers one after another (to prevent performance hit)

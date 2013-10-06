@@ -1,6 +1,6 @@
 {
   "name": "clu",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Run, stop, restart & manage your node cluster.",
   "main": "clu.js",
   "scripts": {
