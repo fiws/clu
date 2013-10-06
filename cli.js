@@ -1,130 +1,145 @@
+var path = require('path');
 var fs = require('fs');
-var dnode = require('dnode');
-var net = require('net');
+var nssocket = require('nssocket');
 var child_process = require('child_process');
+
+var pack = require("./package.json");
+var _ = require('lodash');
 
 require('colors');
 
-var _ = require('lodash');
+var socket = new nssocket.NsSocket();
 var program = require('commander');
+//var inquirer = require('inquirer');
+
+if (!fs.existsSync(cluPath + '/clu.sock')) throw new Error("master is not running or cli is disabled");
 
 program
-	.version('0.0.1')
-	.usage('[options] <action> [path]')
+	.version(pack.version)
+	.usage('[options] <action>')
 	.option('-j, --json', 'Output only json')
-	.option('--force', 'force something');
-
-program.parse(process.argv);
-var cmd = program.args[0];
-
-if (cmd === "start") {
-	// thanks https://github.com/indexzero/daemon.node/blob/master/index.js
-	var script = process.argv[1];
-
-	var options = {
-		stdio: 'ignore',
-		env: process.env,
-		cwd: process.cwd,
-		detached: true
-	};
-
-	// spawn the child using the same node process as ours
-	var child = child_process.spawn(process.execPath, [script], options);
-
-	// required so the parent can exit
-	child.unref();
-
-	// now exit
-	process.exit();
-}
+	.option('-v, --verbose', 'More Output')
+	.option('--force', 'Force something');
 
 
-var d = dnode();
-d.on('remote', function (master) {
-
-	var cmds = {};
-
-	cmds.stop = function(cb){
-		console.log("stopping..");
-		master.stop(function(){
-			cb();
-		});
-	};
-
-
-	cmds.restart = function(cb){
-		console.log("respawning all workers");
-		master.restart(function(){
-			cb();
-		});
-	};
-
-	cmds["restart-master"] = function(cb){
-		console.log("restarting master process");
-		master.restartMaster();
-		cb();
-	};
-
-	cmds.scaleup = function(cb){
-		var usage = function(){
-			console.log("Usage: scaleup <value>");
-			cb();
-		};
-		var value = program.args[1];
-		if (!value) usage();
-		if (_.isNumber(value)) usage();
-		if (value === 0){
-			console.log("0 won't change anything...");
-			cb();
-		}
-
-		master.increaseWorkers(value);
-		console.log("scaling " + "up".bold +  " by " + value);
-		cb();
-
-	};
-
-	cmds.scaledown = function(cb){
-		var usage = function(){
-			console.log("Usage: scaleup <value>");
-			cb();
-		};
-		var value = program.args[1];
-		if (!value) usage();
-		if (_.isNumber(value)) usage();
-		if (value === 0){
-			console.log("0 won't change anything...");
-			cb();
-		}
-
-		if (program.force){
-			console.log("killing " + value + " workers");
-			// master.decreaseWorkers.force does not work. i blame dnode
-			master.decreaseWorkersForce(value, function(err){
-				if(err) console.log("ERROR: %s".red, err.message);
-				cb();
-			});
-		} else {
-			console.log("scaling " + "down".bold +  " by " + value);
-			master.decreaseWorkers(value, function(err){
-				if(err) console.log("ERROR: %s".red, err.message);
-				cb();
-			});
-		}
-
-	};
-
-	cmds.repl = function(){
-		console.log("Starting telnet client...\n");
-		require("./lib/telnet-client");
-		socket.end();
-	};
-
-	if (!cmds[cmd]) process.exit();
-	else cmds[cmd](process.exit);
-
+program.on('--help', function(){
+	console.log("  I have no %se what I am doing...", "clu".bold);
 });
 
-if (!fs.existsSync('./.clu/dnode.sock')) throw new Error("master is not running or cli is disabled");
-var socket = net.connect('./.clu/dnode.sock');
-socket.pipe(d).pipe(socket);
+
+program
+	.command('start [server]')
+	.description('Start the clu cluster')
+	.option('-r, --repl', 'Start a REPL after the Server started')
+	.action(function(server){
+		socket.destroy();
+		// thanks https://github.com/indexzero/daemon.node/blob/master/index.js
+		var script = server || process.argv[1];
+		var scriptName = path.basename(script);
+
+		var options = {
+			stdio: 'ignore',
+			env: process.env,
+			cwd: process.cwd,
+			detached: true
+		};
+
+		if (scriptName === "newCli" || scriptName === "newCli.js"){
+			console.log("Error: Nothing to start.");
+		} else {
+			// spawn the child using the same node process as ours
+			var child = child_process.spawn(process.execPath, [script], options);
+
+			// let the parent exit
+			child.unref();
+			process.exit();
+		}
+	});
+
+program
+	.command('repl')
+	.description('Throws you inside a REPL')
+	.action(function(){
+		require("./lib/telnet-client");
+		socket.end(); // end protcol socket. we're in repl now!
+	});
+
+program
+	.command('restart')
+	.description('Restart all workers (safely)')
+	.option('--fast', 'Restart More workers at once')
+	.action(function(){
+		console.log("Restarting all workers");
+		socket.send(["cmd", "restart"], {fast: program.fast});
+	});
+
+program
+	.command('restart-master')
+	.description('Restart the master process (there will be a downtime!)')
+	.action(function(){
+		console.log("Restarting master process");
+		socket.send(["cmd", "restartMaster"]);
+	});
+
+program
+	.command('scaleup <x>')
+	.description('Scaleup by x workers')
+	.action(function(num){
+		console.log("Scaling up by %d", num);
+		socket.send(["cmd", "scaleUp"], num);
+	});
+
+program
+	.command('scaledown <x>')
+	.description('Scale down by x workers')
+	.action(function(num){
+		console.log("Scaling down by %d", num);
+		socket.send(["cmd", "scaleDown"], num);
+	});
+
+
+program
+	.command('stop')
+	.description('stop all workers and the master process')
+	.action(function(){
+		console.log("Stopping all workers & the master process!");
+		socket.send(["cmd", "stop"], {force: program.force});
+	});
+
+
+socket.data("log", function(data){
+	if (data.msg) console.log(data.msg);
+});
+
+socket.data(["log", "step"], function(msg){
+	process.stdout.write(msg);
+});
+
+socket.data("done", function(data){
+	console.log();
+	if (data.err){
+		console.log("✘ Task %s failed!".red, data.name);
+		console.log(data.err.message);
+		if (program.verbose) console.log(data.err.stack);
+	} else {
+		console.log("✔ Task %s succeeded!".green, data.name);
+	}
+	socket.end();
+});
+
+
+var cluPath = "./.clu";
+
+if (!_.contains(process.argv, "--help") && !_.contains(process.argv, "-h")){
+	var commands = _.keys(program._events);
+
+	// if <action> is unknown
+	if (!_.contains(commands, process.argv[2])){
+		console.log("use --help for help");
+		return;
+	}
+
+	// don't connect. otherwise there will be ECONNRESET
+	socket.connect(cluPath + '/clu.sock');
+}
+program.parse(process.argv);

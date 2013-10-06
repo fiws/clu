@@ -77,8 +77,7 @@ exports.createCluster = function(options){
 	cluster.setupMaster(clusterOptions);
 
 	// for cli
-	if (options.cli === true) use(require('./lib/dnode'));
-	if (options.cli === true) use(require('./lib/protocol'));
+	if (options.cli === true) use(require('./lib/protocol')());
 
 
 	// Finally: Fork the workers
@@ -109,9 +108,10 @@ exports.createCluster = function(options){
 
 };
 
+var cluExports = module.exports;
 var use = exports.use = function(module){
 	if (cli === true) return;
-	module.call(cluster, exports.options);
+	module.call(cluExports, cluExports);
 };
 
 exports.restart = function(cb){
@@ -137,9 +137,10 @@ exports.fastRestart = function(){
 	// TODO: implement
 };
 
-exports.restartMaster = function(){
+exports.restartMaster = function(cb){
 	var child_process = require('child_process');
 	cluster.disconnect(function(){
+		if (cb) cb();
 		var script = process.argv[1];
 
 		// spawn the child using the same node process as ours
@@ -236,7 +237,7 @@ exports.stop = function(cb){
 };
 
 exports.getWorkers = function(cb){
-	cb(cluster);
+	cb(_.values(cluster.workers));
 };
 
 exports.getWorkerCount = function(cb){
