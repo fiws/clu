@@ -1,7 +1,7 @@
 {
   "name": "clu",
   "version": "0.2.2",
-  "description": "Run, stop, restart & manage your node cluster.",
+  "description": "Manage your node cluster. With zero downtime",
   "main": "clu.js",
   "scripts": {
     "test": "mocha --reporter spec test"
@@ -9,7 +9,9 @@
   "keywords": [
     "cluster",
     "forever",
-    "zero downtime"
+    "zero downtime",
+    "restart",
+    "reload"
   ],
   "author": "Filip Weiss <me@fiws.net>",
   "license": "MIT",

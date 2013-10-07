@@ -77,7 +77,7 @@ Use --force to kill them
 #### clu.createCluster(options)
 Creates a new cluster. Exec option is required.
 
-** Options **
+**Options**
 
 * `workers` - Number of workers, will default to the number of cores
 * `silent` - Boolean: Makes the master & workers silent (default: false)

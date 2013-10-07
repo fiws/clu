@@ -136,7 +136,7 @@ exports.restart = function(cb){
 		gapFiller.once('online', function(){
 			logger.step(".".green);
 			worker.disconnect();
-			setTimeout(cb, 2000);
+			cb();
 		});
 
 	}, function(err){
