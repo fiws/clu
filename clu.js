@@ -93,7 +93,7 @@ exports.createCluster = function(options){
 
 
 	// Finally: Fork the workers
-	increaseWorkers(options.workers);
+	scaleUp(options.workers);
 
 
 	// Listeners
@@ -168,7 +168,7 @@ exports.restartMaster = function(cb){
 };
 
 // also used internal for first start
-var increaseWorkers = exports.increaseWorkers = function(num, cb){
+var scaleUp = exports.scaleUp = function(num, cb){
 	// Fork the workers
 	async.times(num, function(a, done){
 		var worker = cluster.fork();
@@ -186,8 +186,10 @@ var increaseWorkers = exports.increaseWorkers = function(num, cb){
 	});
 };
 
+exports.increaseWorkers = scaleUp;
 
-exports.decreaseWorkers = function(num, cb){
+
+exports.scaleDown = function(num, cb){
 	var workers = _.filter(cluster.workers, function(worker){
 		return (worker.state != "disconnected" && worker.state != "exit");
 	});
@@ -212,7 +214,9 @@ exports.decreaseWorkers = function(num, cb){
 
 };
 
-exports.decreaseWorkers.force = function(num, cb){
+exports.decreaseWorkers = exports.scaleDown;
+
+exports.scaleDown.force = function(num, cb){
 	var workers = _.filter(cluster.workers, function(worker){
 		return (worker.state != "disconnected" && worker.state != "exit");
 	});
