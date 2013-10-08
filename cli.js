@@ -108,7 +108,7 @@ program
 	.command('scaleup <x>')
 	.description('Scaleup by x workers')
 	.action(function(num){
-		console.log("Scaling up by %d", num);
+		console.log("Scaling up by %d workers", num);
 		socket.send(["cmd", "scaleUp"], num);
 	});
 
@@ -116,7 +116,7 @@ program
 	.command('scaledown <x>')
 	.description('Scale down by x workers')
 	.action(function(num){
-		console.log("Scaling down by %d", num);
+		console.log("Scaling down by %d workers", num);
 		socket.send(["cmd", "scaleDown"], num);
 	});
 

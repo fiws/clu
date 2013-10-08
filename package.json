@@ -1,6 +1,6 @@
 {
   "name": "clu",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Manage your node cluster. With zero downtime",
   "main": "clu.js",
   "scripts": {

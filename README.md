@@ -7,7 +7,7 @@ A cluster manager inspired by [cluster](https://github.com/LearnBoost/cluster). 
 
 **Features:**
 
-![](https://i.imgur.com/k6r888c.png)
+![](https://i.imgur.com/nPBT1eS.png)
 
 * built in CLI (optional)
 * zero downtime restarts
@@ -48,7 +48,7 @@ These only work if you have the 'cli' option enabled.
 ### repl
 Only works if you `clu.use(clu.repl())`
 Throws you in a repl.
-![](https://i.imgur.com/E5l57ct.png)
+![](https://i.imgur.com/nrJRC2S.png)
 
 ### start
 Will start the server and throw you back into your terminal.
@@ -62,10 +62,10 @@ Respawns all workers one after another.
 ### restart-master
 Will restart the master process. (This will cause a downtime!).
 
-### scaleup <x\>
+### scaleup x
 Start x number of workers
 
-### scaledown <x\>
+### scaledown x
 Stop x number of workers
 Use --force to kill them
 
@@ -75,10 +75,11 @@ Use --force to kill them
 ### Methods
 
 #### clu.createCluster(options)
-Creates a new cluster. Exec option is required.
+Creates a new cluster.
 
 **Options**
 
+* `exec` - the file to execute (required)
 * `workers` - Number of workers, will default to the number of cores
 * `silent` - Boolean: Makes the master & workers silent (default: false)
 * `silentWorkers` - Boolean: If true workers output won't be displayed (default: true)
