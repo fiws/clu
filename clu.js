@@ -105,6 +105,13 @@ exports.createCluster = function(options){
 		logger.debug("Worker %s started (PID %s)".green , worker.id, worker.process.pid);
 	});
 
+	cluster.on('listening', function(worker) {
+		worker.timeStarted = new Date();
+		worker.uptime = function(){
+			return (new Date() - this.timeStarted) / 1000;
+		};
+	});
+
 	cluster.on('disconnect', function(worker) {
 		if (worker.suicide === true) return;
 		logger.warn('Worker #%s has disconnected. respawning...'.red, worker.id);
@@ -260,12 +267,45 @@ exports.stopWorkers = function(cb){
 	});
 };
 
-exports.getWorkers = function(cb){
-	cb(_.values(cluster.workers));
+exports.workers = function(cb){
+	var workers = _.values(cluster.workers);
+
+	if (cb) cb(workers);
+	else return workers;
 };
 
-exports.getWorkerCount = function(cb){
-	cb(_.keys(cluster.workers).length);
+exports.workerCount = function(cb){
+	var count = _.keys(cluster.workers).length;
+	if (cb) cb(count);
+	else return count;
+};
+
+exports.status = function(cb){
+	var workers = _.values(cluster.workers);
+	var status = {
+		workers: {
+			total: workers.length,
+			active: 0,
+			pending: 0,
+			averageUptime: 0
+		},
+		master: {
+			uptime: process.uptime(),
+			memoryUsage: process.memoryUsage()
+		}
+	};
+	
+	_.each(workers, function(worker){
+		if (worker.state == "disconnected" || worker.state == "exit" || worker.state == "online") status.workers.pending++;
+		status.workers.averageUptime += worker.uptime();
+	});
+	// average uptime
+	status.workers.averageUptime = status.workers.averageUptime / workers.length;
+
+	status.workers.active = workers.length - status.workers.pending;
+
+	if (cb) cb(status);
+	else return status;
 };
 
 exports.cluster = cluster;

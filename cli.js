@@ -5,6 +5,7 @@ var child_process = require('child_process');
 
 var pack = require("./package.json");
 var _ = require('lodash');
+var moment = require('moment');
 
 require('colors');
 
@@ -54,6 +55,28 @@ program
 			child.unref();
 			process.exit();
 		}
+	});
+
+program
+	.command('status')
+	.description('Throws you inside a REPL')
+	.action(function(){
+		socket.send("status");
+		socket.data("status", function(status){
+			console.log("Workers\n".white.underline);
+			console.log("  Total:   ".bold + status.workers.total);
+			console.log("  Active:  ".bold.green + status.workers.active);
+			console.log("  Pending: ".bold.yellow + status.workers.pending + "\n");
+
+			var masterUptime = moment.duration(status.master.uptime, "seconds").humanize();
+			var workerAvgUptime = moment.duration(status.workers.averageUptime, "seconds").humanize();
+
+			console.log("Uptime\n".white.underline);
+			console.log("  Master:         ".bold + masterUptime);
+			console.log("  Average Worker: ".bold + workerAvgUptime);
+			console.log();
+			socket.end();
+		});
 	});
 
 program

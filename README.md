@@ -2,7 +2,7 @@ clu
 ========
 *cluster without ster... name might change*
 
-A cluster manager inspired by [cluster](https://github.com/LearnBoost/cluster).
+A cluster manager inspired by [cluster](https://github.com/LearnBoost/cluster). *Still under development!*
 
 
 **Features:**
@@ -15,7 +15,7 @@ A cluster manager inspired by [cluster](https://github.com/LearnBoost/cluster).
 * add or remove workers on the fly
 * uses the node cluster API
 
-> [![Build Status](https://travis-ci.org/fiws/clu.png?branch=master)](https://travis-ci.org/fiws/clu) This is still under development
+> [![Build Status](https://travis-ci.org/fiws/clu.png?branch=master)](https://travis-ci.org/fiws/clu)
 
 
 ## Setup
@@ -36,14 +36,14 @@ clu.createCluster({
 
 clu.use(clu.repl());
 ```
-Start your cluster with `node server start` or `node server &` (if you have cli disabled)
+Start your cluster with `node server start` or `node server &` (if you have the cli disabled)
 
 
 ## Commands
 
 **`node server --help`** will output all available commands
 
-These only work if you have the 'cli' option enabled. (server is the file where you call `clu.createCluster()`)
+These only work if you have the 'cli' option enabled.
 
 ### repl
 Only works if you `clu.use(clu.repl())`
@@ -90,7 +90,7 @@ Respawns all workers one after one and calls the callback after all workers have
 
 
 #### clu.restartMaster(cb)
-Restarts the master process. Calls the callback when all workers disconnected
+Restarts the master process. Calls the callback when all workers have disconnected.
 
 
 #### clu.stop(cb)
@@ -100,17 +100,36 @@ Stops the master process and all workers. Callback gets called when all workers 
 Stops the all workers but not the master process. Callback gets called when all workers disconnect.
 
 
-#### clu.increaseWorkers(num, cb)
-Spawns x amount of new workers. Will cb after all new workers are listening.
+#### clu.scaleUp(num, cb)
+Spawns x new workers. Will cb after all new workers are listening.
 
 
-#### clu.decreaseWorkers(num, cb)
-Stops x amount of workers. Will cb after all workers have disconnected. Will throw if you stop more workers than available or you try to stop all (use `clu.stop()` for that).
+#### clu.scaleDown(num, cb)
+Stops x amount of workers. Will cb after all workers have disconnected. Will throw if you stop more workers than available or you try to stop all (use `clu.stop() or clu.stopWorkers()` for that).
 
-#### clu.getWorkers(cb)
-Calls back with an array of workers.
+#### clu.workers(cb)
+Calls back with an array of workers. Returns if no callback is given.
 
-
+#### clu.status()
+Returns some status data. Example:
+```JavaScript
+{ 
+	workers: { 
+		total: 2,
+		active: 2,
+		pending: 0,
+		averageUptime: 22.2365 
+	},
+	master: {
+		uptime: 22.4090,
+		memoryUsage: {
+			rss: 17698816,
+			heapTotal: 12376832,
+			heapUsed: 4889800 
+		}
+	}
+}
+```
 
 
 
