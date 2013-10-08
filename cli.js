@@ -29,13 +29,12 @@ program.on('--help', function(){
 
 
 program
-	.command('start [server]')
+	.command('start')
 	.description('Start the clu cluster')
-	.option('-r, --repl', 'Start a REPL after the Server started')
-	.action(function(server){
+	.action(function(){
 		socket.destroy();
 		// thanks https://github.com/indexzero/daemon.node/blob/master/index.js
-		var script = server || process.argv[1];
+		var script = process.argv[1];
 		var scriptName = path.basename(script);
 
 		var options = {
