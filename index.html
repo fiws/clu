@@ -4,39 +4,51 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Clu by fiws</title>
-
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
   </head>
   <body>
-    <div class="wrapper">
+
       <header>
         <h1>Clu</h1>
         <p>A node cluster manager.</p>
-        <p class="view"><a href="https://github.com/fiws/clu">View the Project on GitHub <small>fiws/clu</small></a></p>
-        <ul>
-          <li><a href="https://github.com/fiws/clu/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/fiws/clu/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/fiws/clu">View On <strong>GitHub</strong></a></li>
-        </ul>
       </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/fiws/clu" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/fiws/clu/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/fiws/clu/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
       <section>
         <h1>
 <a name="clu" class="anchor" href="#clu"><span class="octicon octicon-link"></span></a>clu</h1>
 
 <p><em>cluster without ster... name might change</em></p>
 
-<p>A cluster manager inspired by <a href="https://github.com/LearnBoost/cluster">cluster</a>.</p>
+<p>A cluster manager inspired by <a href="https://github.com/LearnBoost/cluster">cluster</a>. <em>Still under development!</em></p>
 
 <p><strong>Features:</strong></p>
 
-<p><img src="https://i.imgur.com/k6r888c.png" alt=""></p>
+<p><img src="https://i.imgur.com/nPBT1eS.png" alt=""></p>
 
 <ul>
 <li>built in CLI (optional)</li>
@@ -45,7 +57,7 @@
 <li>add or remove workers on the fly</li>
 <li>uses the node cluster API</li>
 </ul><blockquote>
-<p><a href="https://travis-ci.org/fiws/clu"><img src="https://travis-ci.org/fiws/clu.png?branch=master" alt="Build Status"></a> This is still under development</p>
+<p><a href="https://travis-ci.org/fiws/clu"><img src="https://travis-ci.org/fiws/clu.png?branch=master" alt="Build Status"></a></p>
 </blockquote>
 
 <h2>
@@ -68,21 +80,21 @@
 <span class="nx">clu</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">clu</span><span class="p">.</span><span class="nx">repl</span><span class="p">());</span>
 </pre></div>
 
-<p>Start your cluster with <code>node server start</code> or <code>node server &amp;</code> (if you have cli disabled)</p>
+<p>Start your cluster with <code>node server start</code> or <code>node server &amp;</code> (if you have the cli disabled)</p>
 
 <h2>
 <a name="commands" class="anchor" href="#commands"><span class="octicon octicon-link"></span></a>Commands</h2>
 
 <p><strong><code>node server --help</code></strong> will output all available commands</p>
 
-<p>These only work if you have the 'cli' option enabled. (server is the file where you call <code>clu.createCluster()</code>)</p>
+<p>These only work if you have the 'cli' option enabled.</p>
 
 <h3>
 <a name="repl" class="anchor" href="#repl"><span class="octicon octicon-link"></span></a>repl</h3>
 
 <p>Only works if you <code>clu.use(clu.repl())</code>
 Throws you in a repl.
-<img src="https://i.imgur.com/E5l57ct.png" alt=""></p>
+<img src="https://i.imgur.com/nrJRC2S.png" alt=""></p>
 
 <h3>
 <a name="start" class="anchor" href="#start"><span class="octicon octicon-link"></span></a>start</h3>
@@ -105,12 +117,12 @@ Throws you in a repl.
 <p>Will restart the master process. (This will cause a downtime!).</p>
 
 <h3>
-<a name="scaleup-" class="anchor" href="#scaleup-"><span class="octicon octicon-link"></span></a>scaleup </h3>
+<a name="scaleup-x" class="anchor" href="#scaleup-x"><span class="octicon octicon-link"></span></a>scaleup x</h3>
 
 <p>Start x number of workers</p>
 
 <h3>
-<a name="scaledown-" class="anchor" href="#scaledown-"><span class="octicon octicon-link"></span></a>scaledown </h3>
+<a name="scaledown-x" class="anchor" href="#scaledown-x"><span class="octicon octicon-link"></span></a>scaledown x</h3>
 
 <p>Stop x number of workers
 Use --force to kill them</p>
@@ -124,11 +136,13 @@ Use --force to kill them</p>
 <h4>
 <a name="clucreateclusteroptions" class="anchor" href="#clucreateclusteroptions"><span class="octicon octicon-link"></span></a>clu.createCluster(options)</h4>
 
-<p>Creates a new cluster. Exec option is required.</p>
+<p>Creates a new cluster.</p>
 
 <p><strong>Options</strong></p>
 
 <ul>
+<li>
+<code>exec</code> - the file to execute (required)</li>
 <li>
 <code>workers</code> - Number of workers, will default to the number of cores</li>
 <li>
@@ -145,7 +159,7 @@ Use --force to kill them</p>
 <h4>
 <a name="clurestartmastercb" class="anchor" href="#clurestartmastercb"><span class="octicon octicon-link"></span></a>clu.restartMaster(cb)</h4>
 
-<p>Restarts the master process. Calls the callback when all workers disconnected</p>
+<p>Restarts the master process. Calls the callback when all workers have disconnected.</p>
 
 <h4>
 <a name="clustopcb" class="anchor" href="#clustopcb"><span class="octicon octicon-link"></span></a>clu.stop(cb)</h4>
@@ -158,19 +172,42 @@ Use --force to kill them</p>
 <p>Stops the all workers but not the master process. Callback gets called when all workers disconnect.</p>
 
 <h4>
-<a name="cluincreaseworkersnum-cb" class="anchor" href="#cluincreaseworkersnum-cb"><span class="octicon octicon-link"></span></a>clu.increaseWorkers(num, cb)</h4>
+<a name="cluscaleupnum-cb" class="anchor" href="#cluscaleupnum-cb"><span class="octicon octicon-link"></span></a>clu.scaleUp(num, cb)</h4>
 
-<p>Spawns x amount of new workers. Will cb after all new workers are listening.</p>
-
-<h4>
-<a name="cludecreaseworkersnum-cb" class="anchor" href="#cludecreaseworkersnum-cb"><span class="octicon octicon-link"></span></a>clu.decreaseWorkers(num, cb)</h4>
-
-<p>Stops x amount of workers. Will cb after all workers have disconnected. Will throw if you stop more workers than available or you try to stop all (use <code>clu.stop()</code> for that).</p>
+<p>Spawns x new workers. Will cb after all new workers are listening.</p>
 
 <h4>
-<a name="clugetworkerscb" class="anchor" href="#clugetworkerscb"><span class="octicon octicon-link"></span></a>clu.getWorkers(cb)</h4>
+<a name="cluscaledownnum-cb" class="anchor" href="#cluscaledownnum-cb"><span class="octicon octicon-link"></span></a>clu.scaleDown(num, cb)</h4>
 
-<p>Calls back with an array of workers.</p>
+<p>Stops x amount of workers. Will cb after all workers have disconnected. Will throw if you stop more workers than available or you try to stop all (use <code>clu.stop() or clu.stopWorkers()</code> for that).</p>
+
+<h4>
+<a name="cluworkerscb" class="anchor" href="#cluworkerscb"><span class="octicon octicon-link"></span></a>clu.workers(cb)</h4>
+
+<p>Calls back with an array of workers. Returns if no callback is given.</p>
+
+<h4>
+<a name="clustatus" class="anchor" href="#clustatus"><span class="octicon octicon-link"></span></a>clu.status()</h4>
+
+<p>Returns some status data. Example:</p>
+
+<div class="highlight highlight-JavaScript"><pre><span class="p">{</span> 
+    <span class="nx">workers</span><span class="o">:</span> <span class="p">{</span> 
+        <span class="nx">total</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="nx">active</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="nx">pending</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="nx">averageUptime</span><span class="o">:</span> <span class="mf">22.2365</span> 
+    <span class="p">},</span>
+    <span class="nx">master</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">uptime</span><span class="o">:</span> <span class="mf">22.4090</span><span class="p">,</span>
+        <span class="nx">memoryUsage</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">rss</span><span class="o">:</span> <span class="mi">17698816</span><span class="p">,</span>
+            <span class="nx">heapTotal</span><span class="o">:</span> <span class="mi">12376832</span><span class="p">,</span>
+            <span class="nx">heapUsed</span><span class="o">:</span> <span class="mi">4889800</span> 
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
 
 <h2>
 <a name="plugins" class="anchor" href="#plugins"><span class="octicon octicon-link"></span></a>Plugins</h2>
@@ -199,11 +236,11 @@ contact me if you create any :)</p>
 
 <p>MIT</p>
       </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/fiws">fiws</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
+      </footer>
     </div>
-    <footer>
-      <p>Project maintained by <a href="https://github.com/fiws">fiws</a></p>
-      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
-    </footer>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
   </body>
