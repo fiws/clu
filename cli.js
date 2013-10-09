@@ -1,5 +1,5 @@
 var path = require('path');
-var fs = require('fs');
+//var fs = require('fs');
 var nssocket = require('nssocket');
 var child_process = require('child_process');
 
@@ -14,7 +14,6 @@ var program = require('commander');
 //var inquirer = require('inquirer');
 
 var cluPath = "./.clu";
-if (!fs.existsSync(cluPath + '/clu.sock')) throw new Error("master is not running or cli is disabled");
 
 program
 	.version(pack.version)
