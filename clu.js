@@ -1,21 +1,29 @@
 // libs
+var events = require('events');
 var fs = require('fs');
 var _ = require('lodash');
 var cluster = require('cluster');
 var async = require('async');
 
+// event emitter
+var clu = new events.EventEmitter();
+module.exports = clu;
+
+clu.task = new events.EventEmitter();
+
 var logger = require('./lib/logger'); // own crappy logger
-exports.logger = logger; // expose it
+clu.logger = logger; // expose it
 
 
 var cli = false;
+var exiting = false;
 
 require('colors');
 
 // built in plugins
-exports.repl = require('./lib/repl');
+clu.repl = require('./lib/repl');
 
-exports.createCluster = function(options){
+clu.createCluster = function(options){
 
 	// missing stuff
 	if (!options) throw new Error("not enough parameters");
@@ -33,7 +41,7 @@ exports.createCluster = function(options){
 	// get the config dir (.clu and the absolute path of the exec)
 	var path = require('path');
 
-	var cd = exports.dir = path.dirname(process.argv[1]) + "/.clu/";
+	var cd = clu.dir = path.dirname(process.argv[1]) + "/.clu/";
 
 	// absolute path (?)
 	if (options.exec[0] === "/"){
@@ -43,7 +51,7 @@ exports.createCluster = function(options){
 	}
 	if (!fs.existsSync(options.exec) && !fs.existsSync(options.exec + ".js")) throw new Error(options.exec + " was not found!");
 
-	exports.options = options;
+	clu.options = options;
 
 	// check if running like 'node server <verb>' and cli is enabled
 	if (options.cli && process.argv[2]){
@@ -113,37 +121,48 @@ exports.createCluster = function(options){
 	});
 
 	cluster.on('disconnect', function(worker) {
-		if (worker.suicide === true) return;
+		if (worker.suicide === true || exiting === true) return;
 		logger.warn('Worker #%s has disconnected. respawning...'.red, worker.id);
 		cluster.fork();
 	});
 
 	// Ctrl + C
 	process.on('SIGINT', function(){
+		console.log("BYE!");
 		cluster.disconnect(function(){
-			process.exit();
+			exiting = true;
+			process.nextTick(process.exit);
 		});
 	});
 
 };
 
-var cluExports = module.exports;
-var use = exports.use = function(module){
+var use = clu.use = function(module){
 	if (cli === true) return;
-	module.call(cluExports, cluExports);
+	module.call(clu, clu);
 };
 
-exports.restart = function(cb){
+clu.restart = function(cb){
 	if (!_.isFunction(cb)) cb = function(){};
 
+	var workers = _.values(cluster.workers);
+	var initialCount = workers.length;
+
 	// restart workers one after another
-	async.eachSeries(_.values(cluster.workers), function(worker, cb){
+	var restarted = 0;
+	async.eachSeries(workers, function(worker, cb){
 		var gapFiller = cluster.fork();
 		worker.send('close');
 		gapFiller.once('online', function(){
-			logger.step(".".green);
+			restarted++;
 			worker.disconnect();
 			cb();
+
+			clu.emit("progress", {
+				task: "restart",
+				total: initialCount,
+				current: restarted
+			});
 		});
 
 	}, function(err){
@@ -152,11 +171,11 @@ exports.restart = function(cb){
 	});
 };
 
-exports.fastRestart = function(){
+clu.fastRestart = function(){
 	// TODO: implement
 };
 
-exports.restartMaster = function(cb){
+clu.restartMaster = function(cb){
 	var child_process = require('child_process');
 	cluster.disconnect(function(){
 		if (cb) cb();
@@ -174,7 +193,7 @@ exports.restartMaster = function(cb){
 	});
 };
 
-exports.scaleTo = function(num, cb){
+clu.scaleTo = function(num, cb){
 	if (num < 0) throw new Error("cannot scale below 0 workers.");
 	var workers = getWorkers();
 	workers =_.filter(workers, function(worker){ return worker.state === "listening" || worker.state === "online"; });
@@ -184,13 +203,21 @@ exports.scaleTo = function(num, cb){
 };
 
 // also used internal for first start
-var scaleUp = exports.scaleUp = function(num, cb){
+var scaleUp = clu.scaleUp = function(num, cb){
 	// Fork the workers
+
+	var c = 1;
 	async.times(num, function(a, done){
 		var worker = cluster.fork();
 		worker.once("listening", function(){
-			logger.step(".".green);
 			done(null, worker);
+
+			// Progress event
+			clu.emit("progress", {
+				task: "scaleUp",
+				total: num,
+				current: c++
+			});
 		});
 
 	}, function(err, workers){
@@ -202,22 +229,29 @@ var scaleUp = exports.scaleUp = function(num, cb){
 	});
 };
 
-exports.increaseWorkers = scaleUp;
+clu.increaseWorkers = scaleUp;
 
 
-var scaleDown = exports.scaleDown = function(num, cb){
+var scaleDown = clu.scaleDown = function(num, cb){
 	var workers = _.filter(cluster.workers, function(worker){
 		return (worker.state != "disconnected" && worker.state != "exit");
 	});
 
 	if (num > workers.length) return cb(new Error("not enough workers to stop"));
 
+	var c = 1;
 	async.times(num, function(a, cb){
 		var worker = workers[a];
 		worker.disconnect();
 		worker.once("disconnect", function(){
-			logger.step(".".yellow);
 			cb(null, worker);
+
+			// Progress event
+			clu.emit("progress", {
+				task: "scaleDown",
+				total: num,
+				current: c++
+			});
 		});
 
 	}, function(err, workers){
@@ -230,9 +264,9 @@ var scaleDown = exports.scaleDown = function(num, cb){
 
 };
 
-exports.decreaseWorkers = exports.scaleDown;
+clu.decreaseWorkers = clu.scaleDown;
 
-exports.scaleDown.force = function(num, cb){
+clu.scaleDown.force = function(num, cb){
 	var workers = _.filter(cluster.workers, function(worker){
 		return (worker.state != "disconnected" && worker.state != "exit");
 	});
@@ -245,8 +279,7 @@ exports.scaleDown.force = function(num, cb){
 
 		// workers don't trigger 'disconnected' if killed
 		worker.once("exit", function(code, signal){
-			if (signal == "SIGKILL") logger.step(".".red);
-			else return;
+			if (signal !== "SIGKILL") return;
 			done(null, worker);
 		});
 
@@ -259,7 +292,7 @@ exports.scaleDown.force = function(num, cb){
 	});
 };
 
-exports.stop = function(cb){
+clu.stop = function(cb){
 	logger.info("stopping...".blue);
 	cluster.disconnect(function(){
 		if (cb) cb();
@@ -268,7 +301,7 @@ exports.stop = function(cb){
 	});
 };
 
-var stopWorkers = exports.stopWorkers = function(cb){
+var stopWorkers = clu.stopWorkers = function(cb){
 	logger.info("stopping...".blue);
 	cluster.disconnect(function(){
 		if (cb) cb();
@@ -276,20 +309,20 @@ var stopWorkers = exports.stopWorkers = function(cb){
 	});
 };
 
-var getWorkers = exports.workers = function(cb){
+var getWorkers = clu.workers = function(cb){
 	var workers = _.values(cluster.workers);
 
 	if (cb) cb(workers);
 	else return workers;
 };
 
-exports.workerCount = function(cb){
+clu.workerCount = function(cb){
 	var count = _.keys(cluster.workers).length;
 	if (cb) cb(count);
 	else return count;
 };
 
-exports.status = function(cb){
+clu.status = function(cb){
 	var workers = _.values(cluster.workers);
 	var status = {
 		workers: {
@@ -317,7 +350,7 @@ exports.status = function(cb){
 	else return status;
 };
 
-exports.cluster = cluster;
+clu.cluster = cluster;
 
 
 // global install or node clu

@@ -11,6 +11,9 @@ require('colors');
 
 var socket = new nssocket.NsSocket();
 var program = require('commander');
+
+var multimeter = require('multimeter');
+var multi = multimeter(process);
 //var inquirer = require('inquirer');
 
 var cluPath = "./.clu";
@@ -91,7 +94,7 @@ program
 	.description('Restart all workers (safely)')
 	.option('--fast', 'Restart More workers one by one')
 	.action(function(){
-		console.log("Restarting all workers");
+		console.log("Restarting all workers\n");
 		socket.send(["task", "restart"], {fast: program.fast});
 	});
 
@@ -99,7 +102,7 @@ program
 	.command('restart-master')
 	.description('Restart the master process (there will be a downtime!)')
 	.action(function(){
-		console.log("Restarting master process");
+		console.log("Restarting master process\n");
 		socket.send(["task", "restartMaster"]);
 	});
 
@@ -107,7 +110,7 @@ program
 	.command('scaleto <x>')
 	.description('Scale to x workers')
 	.action(function(num){
-		console.log("Scaling to %d workers", num);
+		console.log("Scaling to %d workers\n", num);
 		socket.send(["task", "scaleTo"], num);
 	});
 
@@ -119,7 +122,7 @@ program
 			console.log("Ok, doing nothing.");
 			socket.end();
 		}
-		console.log("Scaling up by %d workers", num);
+		console.log("Scaling up by %d workers\n", num);
 		socket.send(["task", "scaleUp"], num);
 	});
 
@@ -131,7 +134,7 @@ program
 			console.log("Ok, doing nothing.");
 			socket.end();
 		}
-		console.log("Scaling down by %d workers", num);
+		console.log("Scaling down by %d workers\n", num);
 		socket.send(["task", "scaleDown"], num);
 	});
 
@@ -153,20 +156,64 @@ socket.data(["log", "step"], function(msg){
 	process.stdout.write(msg);
 });
 
+var tasks = {};
+
+socket.data("progress", function(data){
+	if (tasks[data.task] === undefined) tasks[data.task] = data;
+
+	var task = tasks[data.task];
+
+	if (task.bar === undefined){
+		// dropin
+		var bar = task.bar = multi.rel(4, 1);
+		bar.solid = {background: null, foreground: "white", text: "◼"};
+		bar.before = data.task + " ❲";
+		bar.after = "❳ ";
+		bar.width = 14;
+
+		task.bar.ratio(data.current, data.total);
+
+	} else {
+		// update progress
+		if (task.current > data.current && task.reverse !== true) return;
+
+		task.bar.ratio(data.current, data.total);
+		if (data.current == data.total) delete tasks[data.task];
+	}
+});
+
 socket.data("done", function(data){
-	console.log();
+	// move progress bars
+	_.each(tasks, function(task){
+		task.bar.offset +=2;
+	});
+
 	if (data.err){
 		console.log("✘ Task %s failed!".red, data.name);
 		console.log(data.err.message);
 		if (program.verbose) console.log(data.err.stack);
 	} else {
-		console.log("✔ Task %s succeeded!".green, data.name);
+		console.log("\n✔ Task %s succeeded!".green, data.name);
 	}
-	socket.end();
+
+	if (_.values(tasks).length !== 0){
+		// Timeout for progress bars
+		setTimeout(function(){ socket.end(); }, 1000);
+	} else socket.end();
+
+});
+
+socket.on("close", function(){
+	// otherwise process will keep running
+	multi.charm.cursor(true);
+	multi.write('\n').destroy();
 });
 
 // if master is not running
 socket.on("error", function(err){
+	multi.charm.cursor(true);
+	multi.write('\n').destroy();
+
 	if (err.code === "ECONNREFUSED") console.log("Connection refused. Is the master running?".red);
 	else throw err;
 });
