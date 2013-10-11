@@ -92,7 +92,7 @@ program
 	.option('--fast', 'Restart More workers at once')
 	.action(function(){
 		console.log("Restarting all workers");
-		socket.send(["cmd", "restart"], {fast: program.fast});
+		socket.send(["task", "restart"], {fast: program.fast});
 	});
 
 program
@@ -100,7 +100,15 @@ program
 	.description('Restart the master process (there will be a downtime!)')
 	.action(function(){
 		console.log("Restarting master process");
-		socket.send(["cmd", "restartMaster"]);
+		socket.send(["task", "restartMaster"]);
+	});
+
+program
+	.command('scaleto <x>')
+	.description('Scale to x workers')
+	.action(function(num){
+		console.log("Scaling to %d workers", num);
+		socket.send(["task", "scaleTo"], num);
 	});
 
 program
@@ -108,7 +116,7 @@ program
 	.description('Scaleup by x workers')
 	.action(function(num){
 		console.log("Scaling up by %d workers", num);
-		socket.send(["cmd", "scaleUp"], num);
+		socket.send(["task", "scaleUp"], num);
 	});
 
 program
@@ -116,7 +124,7 @@ program
 	.description('Scale down by x workers')
 	.action(function(num){
 		console.log("Scaling down by %d workers", num);
-		socket.send(["cmd", "scaleDown"], num);
+		socket.send(["task", "scaleDown"], num);
 	});
 
 
@@ -125,7 +133,7 @@ program
 	.description('stop all workers and the master process')
 	.action(function(){
 		console.log("Stopping all workers & the master process!");
-		socket.send(["cmd", "stop"], {force: program.force});
+		socket.send(["task", "stop"], {force: program.force});
 	});
 
 

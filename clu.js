@@ -174,6 +174,15 @@ exports.restartMaster = function(cb){
 	});
 };
 
+exports.scaleTo = function(num, cb){
+	if (num < 0) throw new Error("cannot scale below 0 workers.");
+	var workers = getWorkers();
+	workers =_.filter(workers, function(worker){ return worker.state === "listening" || worker.state === "online"; });
+	if (num === 0) stopWorkers(cb);
+	else if (num > workers.length) scaleUp(num - workers.length, cb);
+	else scaleDown(workers.length - num, cb);
+};
+
 // also used internal for first start
 var scaleUp = exports.scaleUp = function(num, cb){
 	// Fork the workers
@@ -188,7 +197,7 @@ var scaleUp = exports.scaleUp = function(num, cb){
 		if (err && cb) return cb(err); // TODO: Error handling here
 		else if (err) throw err;
 
-		logger.info(workers.length + " new workers listening.".green.bold);
+		logger.info(workers.length + " new workers listening.".bold);
 		if (cb) cb(null, workers);
 	});
 };
@@ -196,7 +205,7 @@ var scaleUp = exports.scaleUp = function(num, cb){
 exports.increaseWorkers = scaleUp;
 
 
-exports.scaleDown = function(num, cb){
+var scaleDown = exports.scaleDown = function(num, cb){
 	var workers = _.filter(cluster.workers, function(worker){
 		return (worker.state != "disconnected" && worker.state != "exit");
 	});
@@ -215,7 +224,7 @@ exports.scaleDown = function(num, cb){
 		if (err && cb) return cb(err); // TODO: Error handling here
 		else if (err) throw err;
 
-		logger.info(workers.length + " workers stoped.".green.bold);
+		logger.info(workers.length + " workers stoped.".bold);
 		if (cb) cb(null, workers);
 	});
 
@@ -245,7 +254,7 @@ exports.scaleDown.force = function(num, cb){
 		if (err && cb) return cb(err); // TODO: Error handling here
 		else if (err) throw err;
 
-		logger.info(workers.length + " workers killed.".green.bold);
+		logger.info(workers.length + " workers killed.".bold);
 		if (cb) cb(null, workers);
 	});
 };
@@ -259,7 +268,7 @@ exports.stop = function(cb){
 	});
 };
 
-exports.stopWorkers = function(cb){
+var stopWorkers = exports.stopWorkers = function(cb){
 	logger.info("stopping...".blue);
 	cluster.disconnect(function(){
 		if (cb) cb();
@@ -267,7 +276,7 @@ exports.stopWorkers = function(cb){
 	});
 };
 
-exports.workers = function(cb){
+var getWorkers = exports.workers = function(cb){
 	var workers = _.values(cluster.workers);
 
 	if (cb) cb(workers);
