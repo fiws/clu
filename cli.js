@@ -198,7 +198,7 @@ socket.data("done", function(data){
 
 	if (_.values(tasks).length !== 0){
 		// Timeout for progress bars
-		setTimeout(function(){ socket.end(); }, 1000);
+		setTimeout(function(){ socket.end(); }, 300);
 	} else socket.end();
 
 });

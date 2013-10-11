@@ -1,6 +1,6 @@
 {
   "name": "clu",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Manage your node cluster. With zero downtime",
   "main": "clu.js",
   "scripts": {
@@ -17,12 +17,13 @@
   "license": "MIT",
   "dependencies": {
     "colors": "~0.6.2",
-    "lodash": "~2.1.0",
+    "lodash": "~2.2.1",
     "commander": "~2.0.0",
     "async": "~0.2.9",
     "mkdirp": "~0.3.5",
     "nssocket": "~0.5.1",
-    "moment": "~2.3.0"
+    "moment": "~2.3.0",
+    "multimeter": "~0.1.1"
   },
   "devDependencies": {
     "should": "~1.3.0",
