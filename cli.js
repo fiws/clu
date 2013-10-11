@@ -89,7 +89,7 @@ program
 program
 	.command('restart')
 	.description('Restart all workers (safely)')
-	.option('--fast', 'Restart More workers at once')
+	.option('--fast', 'Restart More workers one by one')
 	.action(function(){
 		console.log("Restarting all workers");
 		socket.send(["task", "restart"], {fast: program.fast});
@@ -115,6 +115,10 @@ program
 	.command('scaleup <x>')
 	.description('Scaleup by x workers')
 	.action(function(num){
+		if (num === 0) {
+			console.log("Ok, doing nothing.");
+			socket.end();
+		}
 		console.log("Scaling up by %d workers", num);
 		socket.send(["task", "scaleUp"], num);
 	});
@@ -123,6 +127,10 @@ program
 	.command('scaledown <x>')
 	.description('Scale down by x workers')
 	.action(function(num){
+		if (num === 0) {
+			console.log("Ok, doing nothing.");
+			socket.end();
+		}
 		console.log("Scaling down by %d workers", num);
 		socket.send(["task", "scaleDown"], num);
 	});
@@ -130,7 +138,7 @@ program
 
 program
 	.command('stop')
-	.description('stop all workers and the master process')
+	.description('Stop all workers and the master process')
 	.action(function(){
 		console.log("Stopping all workers & the master process!");
 		socket.send(["task", "stop"], {force: program.force});
@@ -155,6 +163,12 @@ socket.data("done", function(data){
 		console.log("✔ Task %s succeeded!".green, data.name);
 	}
 	socket.end();
+});
+
+// if master is not running
+socket.on("error", function(err){
+	if (err.code === "ECONNREFUSED") console.log("Connection refused. Is the master running?".red);
+	else throw err;
 });
 
 
