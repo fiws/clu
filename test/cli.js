@@ -4,7 +4,8 @@ var should = require("should");
 describe("cli", function(){
 	describe("require", function(){
 
-		it("should NOT throw if master is not running", function(){
+		// will not throw anyway because there are not enough paramters
+		it.skip("should NOT throw if master is not running", function(){
 			// command line tools should not *throw* for simple stuff like that (?)
 			(function(){
 				require("../cli");
