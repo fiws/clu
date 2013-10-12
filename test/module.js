@@ -71,8 +71,8 @@ describe("clu", function(){
 	describe(".scaleDown()", function(){
 		it("should scale down", function(done){
 			clu.scaleDown(2, function(){
-				var workers = clu.workers();
-				should(workers).have.length(2);
+				var status = clu.status();
+				should(status.workers.active).be.equal(2);
 				done();
 			});
 		});
