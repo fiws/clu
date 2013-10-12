@@ -61,7 +61,7 @@ program
 
 program
 	.command('status')
-	.description('Throws you inside a REPL')
+	.description('Shows some numbers about the cluster')
 	.action(function(){
 		socket.send("status");
 		socket.data("status", function(status){
@@ -85,17 +85,19 @@ program
 	.command('repl')
 	.description('Throws you inside a REPL')
 	.action(function(){
-		require("./lib/telnet-client");
+		socket.removeAllListeners("close"); // u might call that a bad hack
+		
 		socket.end(); // end protcol socket. we're in repl now!
+		require("./lib/telnet-client");
 	});
 
 program
 	.command('restart')
 	.description('Restart all workers (safely)')
 	.option('--fast', 'Restart More workers one by one')
-	.action(function(){
+	.action(function(options){
 		console.log("Restarting all workers\n");
-		socket.send(["task", "restart"], {fast: program.fast});
+		socket.send(["task", "restart"], {fast: options.fast});
 	});
 
 program
