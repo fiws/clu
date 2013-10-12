@@ -9,7 +9,7 @@ var async = require('async');
 var clu = new events.EventEmitter();
 module.exports = clu;
 
-clu.task = new events.EventEmitter();
+// clu.tasks = new events.EventEmitter(); // unused for now
 
 var logger = require('./lib/logger'); // own crappy logger
 clu.logger = logger; // expose it

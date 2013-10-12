@@ -1,8 +1,11 @@
 clu
 ========
-*cluster without ster... name might change*
+*cluster without ster... name might change - Still under development!*
 
-A cluster manager inspired by [cluster](https://github.com/LearnBoost/cluster). *Still under development!*
+A cluster manager with a built in CLI and a simple API for plugins.
+clu will spawn the requested number of workers, which will share the same port. This way the load gets distributed across all workers and multiple cores can be used effectively. It uses the [node cluster API](http://nodejs.org/api/cluster.html) to do this.
+
+Inspired by [cluster](https://github.com/LearnBoost/cluster).
 
 
 **Features:**
@@ -15,10 +18,11 @@ A cluster manager inspired by [cluster](https://github.com/LearnBoost/cluster). 
 * add or remove workers on the fly
 * uses the node cluster API
 
-> [![Build Status](https://travis-ci.org/fiws/clu.png?branch=master)](https://travis-ci.org/fiws/clu)
+[![Build Status](https://travis-ci.org/fiws/clu.png?branch=master)](https://travis-ci.org/fiws/clu) [![Dependency Status](https://david-dm.org/fiws/clu.png)](https://david-dm.org/fiws/clu)
 
 
-## Setup
+
+## Getting Started
 1. `npm install --save clu`
 2. Create a server.js that starts your app.
 
@@ -36,7 +40,15 @@ clu.createCluster({
 
 clu.use(clu.repl());
 ```
-Start your cluster with `node server start` or `node server &` (if you have the cli disabled)
+
+Start your cluster with `node server start` 
+
+or just `node server` (if you have the cli disabled)
+
+Important note from the node.js API docs:
+> There is no shared state between the workers. Therefore, it is important to design your program such that it does not rely too heavily on in-memory data objects for things like sessions and login.
+
+This applies to your 'app.js'.
 
 
 ## Commands
@@ -85,7 +97,6 @@ Creates a new cluster.
 * `silentWorkers` - Boolean: If true workers output won't be displayed (default: true)
 * `cli` - Boolean: Enables the CLI. (default: true)
 
-
 #### clu.restart(cb)
 Respawns all workers one after one and calls the callback after all workers have been respawned.
 
@@ -132,6 +143,62 @@ Returns some status data. Example:
 }
 ```
 
+#### clu.use(plugin)
+Use given Plugin. This will just call it with `plugin.call(clu, clu)`
+
+
+### Events
+Event emited by clu. Uses the node EventEmitter. Listen on events like:
+``` JavaScript
+clu.on("progress", fuction(data){
+	console.log(data);
+});
+```
+
+#### progress
+
+* data `Object` - Holds task progress
+
+Emitted if a task makes progress. Example data from a scaleUp task:
+
+``` JSON
+{
+	task: "scaleUp",
+	total: 4, // scaling up by 4
+	current: 2 // to new worker are online yet
+}
+
+```
+
+### Attributes
+clu.[attribute]
+
+#### cluster
+The underlying node cluster.
+
+#### logger
+A crappy logger. Uses util.format to output the message. It has the folling methods:
+
+* logger.log(msg)
+* logger.info(msg)
+* logger.warn(msg)
+* logger.debug(msg)
+
+#### dir
+Absolute `.clu` directory where the pids live.
+
+#### options
+The options the cluster was started with. Example:
+
+``` JSON
+{
+	exec: '/tmp/test/app.js',
+	workers: 2,
+	silent: false,
+	silentWorkers: true,
+	cli: true
+}
+```
 
 
 
