@@ -196,7 +196,7 @@ clu.restartMaster = function(cb){
 clu.scaleTo = function(num, cb){
 	if (num < 0 && cb) cb(new Error("cannot scale below 0 workers."));
 	else if (num < 0) throw new Error("cannot scale below 0 workers.");
-	
+
 	var workers = getWorkers();
 	workers =_.filter(workers, function(worker){ return worker.state === "listening" || worker.state === "online"; });
 	if (num === 0) stopWorkers(cb);
@@ -355,7 +355,7 @@ clu.status = function(cb){
 	
 	_.each(workers, function(worker){
 		if (worker.state == "disconnected" || worker.state == "exit" || worker.state == "online") status.workers.pending++;
-		status.workers.averageUptime += worker.uptime();
+		if (worker.uptime !== undefined) status.workers.averageUptime += worker.uptime();
 	});
 	// average uptime
 	status.workers.averageUptime = status.workers.averageUptime / workers.length;

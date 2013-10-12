@@ -55,8 +55,9 @@ describe("clu", function(){
 	describe(".scaleUp()", function(){
 		it("should scale up", function(done){
 			clu.scaleUp(2, function(){
-				var workers = clu.workers();
-				should(workers).have.length(4);
+				var status = clu.status();
+				should(status.workers.active).be.equal(4);
+
 				done();
 			});
 		});
@@ -93,16 +94,18 @@ describe("clu", function(){
 	describe(".scaleTo()", function(){
 		it("should be able to scale up", function(done){
 			clu.scaleTo(4, function(){
-				var workers = clu.workers();
-				should(workers).have.length(4);
+				var status = clu.status();
+				should(status.workers.active).be.equal(4);
+
 				done();
 			});
 		});
 
 		it("should be able to scale down", function(done){
 			clu.scaleTo(3, function(){
-				var workers = clu.workers();
-				should(workers).have.length(3);
+				var status = clu.status();
+				should(status.workers.active).be.equal(3);
+
 				done();
 			});
 		});
