@@ -194,7 +194,9 @@ clu.restartMaster = function(cb){
 };
 
 clu.scaleTo = function(num, cb){
-	if (num < 0) throw new Error("cannot scale below 0 workers.");
+	if (num < 0 && cb) cb(new Error("cannot scale below 0 workers."));
+	else if (num < 0) throw new Error("cannot scale below 0 workers.");
+	
 	var workers = getWorkers();
 	workers =_.filter(workers, function(worker){ return worker.state === "listening" || worker.state === "online"; });
 	if (num === 0) stopWorkers(cb);
@@ -205,6 +207,9 @@ clu.scaleTo = function(num, cb){
 // also used internal for first start
 var scaleUp = clu.scaleUp = function(num, cb){
 	// Fork the workers
+
+	if (num < 0 && cb) return cb(new Error("cannot start a negative number of workers"));
+	else if (num < 0) throw new Error("cannot start a negative number of workers");
 
 	var c = 1;
 	async.times(num, function(a, done){
@@ -237,7 +242,18 @@ var scaleDown = clu.scaleDown = function(num, cb){
 		return (worker.state != "disconnected" && worker.state != "exit");
 	});
 
-	if (num > workers.length) return cb(new Error("not enough workers to stop"));
+	var err = null;
+	if (num > workers.length){
+		err = new Error("not enough workers to stop");
+		if (cb) return cb(err);
+		else throw err;
+	}
+
+	if (num < 0){
+		err = new Error("cannot stop less than 0 workers");
+		if(cb) return cb(err);
+		else throw err;
+	}
 
 	var c = 1;
 	async.times(num, function(a, cb){
