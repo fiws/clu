@@ -7,7 +7,7 @@ A cluster manager inspired by [cluster](https://github.com/LearnBoost/cluster). 
 
 **Features:**
 
-![](https://i.imgur.com/nPBT1eS.png)
+![](https://i.imgur.com/81MqBtB.png)
 
 * built in CLI (optional)
 * zero downtime restarts
@@ -106,10 +106,10 @@ Spawns x new workers. Will cb after all new workers are listening.
 
 
 #### clu.scaleDown(num, cb)
-Stops x amount of workers. Will cb after all workers have disconnected. Will throw if you stop more workers than available or you try to stop all (use `clu.stop() or clu.stopWorkers()` for that).
+Stops x amount of workers. Will cb after all workers have disconnected. Will throw if you stop more workers than available.
 
 #### clu.workers(cb)
-Calls back with an array of workers. Returns if no callback is given.
+Calls back with an array of workers. Returns workesr if no callback is given.
 
 #### clu.status()
 Returns some status data. Example:
@@ -138,8 +138,8 @@ Returns some status data. Example:
 ## Plugins
 Plugins can be used like this:
 ``` JavaScript
-var cluAwesome = require("clu-awesome");
-clu.use(cluAwesome());
+var cluDnode = require("clu-dnode");
+clu.use(cluDnode());
 clu.use(clu.repl());
 ```
 
