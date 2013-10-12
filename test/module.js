@@ -131,8 +131,8 @@ describe("clu", function(){
 	describe(".stopWorkers()", function(){
 		it("should stop all workers", function(done){
 			clu.stopWorkers(function(){
-				var workers = clu.workers();
-				should(workers).have.length(0);
+				var status = clu.status();
+				should(status.workers.active).be.equal(0);
 				done();
 			});
 		});
