@@ -58,7 +58,7 @@ clu.createCluster = function(options){
 	// check if running like 'node server <verb>' and cli is enabled
 	if (options.cli && process.argv[2]){
 		cli = true;
-		return require('./cli');
+		return require('./commandLine');
 	}
 
 	// options for logging
@@ -372,4 +372,4 @@ clu.cluster = cluster;
 
 
 // global install or node clu
-if(require.main === module) require('./cli');
+if(require.main === module) require('./commandLine');
