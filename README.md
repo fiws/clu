@@ -7,16 +7,17 @@ clu will spawn the requested number of workers, which will share the same port. 
 
 Inspired by [cluster](https://github.com/LearnBoost/cluster).
 
+![](https://i.imgur.com/81MqBtB.png)
+
 
 **Features:**
 
-![](https://i.imgur.com/81MqBtB.png)
-
 * built in CLI (optional)
 * zero downtime restarts
-* restarts workers one after another (to prevent performance hit)
+* restarts workers one after another
 * add or remove workers on the fly
 * uses the node cluster API
+
 
 [![Build Status](https://travis-ci.org/fiws/clu.png?branch=master)](https://travis-ci.org/fiws/clu) [![Dependency Status](https://david-dm.org/fiws/clu.png)](https://david-dm.org/fiws/clu)
 
@@ -55,7 +56,6 @@ This applies to your 'app.js'.
 
 **`node server --help`** will output all available commands
 
-These only work if you have the 'cli' option enabled.
 
 ### repl
 Only works if you `clu.use(clu.repl())`

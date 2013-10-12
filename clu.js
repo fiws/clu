@@ -35,8 +35,10 @@ clu.createCluster = function(options){
 		workers: require('os').cpus().length,
 		silent: false,
 		silentWorkers: true,
-		cli: true
+		cli: true,
+		socket: require("os").platform() === "windows" ? 13872 : 'clu.sock'
 	});
+
 
 	// get the config dir (.clu and the absolute path of the exec)
 	var path = require('path');
@@ -97,7 +99,7 @@ clu.createCluster = function(options){
 	cluster.setupMaster(clusterOptions);
 
 	// for cli
-	if (options.cli === true) use(require('./lib/protocol')());
+	if (options.cli === true) use(require('./lib/protocol')(options.socket));
 
 
 	// Finally: Fork the workers
