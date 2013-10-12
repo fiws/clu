@@ -6,4 +6,4 @@ clu.createCluster({
 
 });
 
-clu.use(clu.repl());
+clu.use(clu.repl('./repl'));

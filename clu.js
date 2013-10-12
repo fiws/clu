@@ -45,6 +45,10 @@ clu.createCluster = function(options){
 
 	var cd = clu.dir = path.dirname(process.argv[1]) + "/.clu/";
 
+	// set clu socket
+	// this is gonna be used by the command line
+	if (_.isString(options.socket) && options.socket[0] !== "/") options.socket = clu.dir + options.socket;
+
 	// absolute path (?)
 	if (options.exec[0] === "/"){
 		cd = path.dirname(options.exec) + "/.clu/";
@@ -58,7 +62,9 @@ clu.createCluster = function(options){
 	// check if running like 'node server <verb>' and cli is enabled
 	if (options.cli && process.argv[2]){
 		cli = true;
-		return require('./commandLine');
+		return process.nextTick(function(){
+			require('./commandLine').start(options);
+		});
 	}
 
 	// options for logging
@@ -372,4 +378,4 @@ clu.cluster = cluster;
 
 
 // global install or node clu
-if(require.main === module) require('./commandLine');
+if(require.main === module) require('./commandLine').start();

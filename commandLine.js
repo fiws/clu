@@ -13,8 +13,7 @@ var socket = new nssocket.NsSocket();
 var program = require('commander');
 
 var multimeter = require('multimeter');
-var multi = multimeter(process);
-process.stdin.unpipe(multi.charm);
+var multi;
 //var inquirer = require('inquirer');
 
 var cluPath = "./.clu";
@@ -25,6 +24,9 @@ program
 	.option('-j, --json', 'Output only json')
 	.option('-v, --verbose', 'More Output')
 	.option('--force', 'Force something');
+
+exports.program = program;
+exports.socket = socket;
 
 
 program.on('--help', function(){
@@ -80,17 +82,6 @@ program
 			console.log();
 			socket.end();
 		});
-	});
-
-program
-	.command('repl')
-	.description('Throws you inside a REPL')
-	.action(function(){
-		// socket.removeAllListeners("close"); // u might call that a bad hack
-		// process.stdin.unpipe(multi.charm);
-
-		socket.end(); // end protcol socket. we're in repl now!
-		require("./lib/telnet-client");
 	});
 
 program
@@ -217,17 +208,26 @@ socket.on("error", function(err){
 	else throw err;
 });
 
+var start = exports.start = function(options){
+	if (!options) options = {};
 
-if (!_.contains(process.argv, "--help") && !_.contains(process.argv, "-h")){
-	var commands = _.keys(program._events);
+	multi = multimeter(process);
+	process.stdin.unpipe(multi.charm);
 
-	// if <action> is unknown
-	if (!_.contains(commands, process.argv[2])){
-		console.log("use --help for help");
-		return;
+	if (!_.contains(process.argv, "--help") && !_.contains(process.argv, "-h")){
+		var commands = _.keys(program._events);
+
+		// if <action> is unknown
+		if (!_.contains(commands, process.argv[2])){
+			console.log("use --help for help");
+			return;
+		}
+
+		// don't connect. otherwise there will be ECONNRESET
+		if (options.socket !== undefined) socket.connect(options.socket);
+		else socket.connect(cluPath + '/clu.sock');
 	}
+	program.parse(process.argv);
+};
 
-	// don't connect. otherwise there will be ECONNRESET
-	socket.connect(cluPath + '/clu.sock');
-}
-program.parse(process.argv);
+if(require.main === module) start();
