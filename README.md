@@ -161,7 +161,7 @@ clu.on("progress", fuction(data){
 
 Emitted if a task makes progress. Example data from a scaleUp task:
 
-``` JSON
+``` JavaScript
 {
 	task: "scaleUp",
 	total: 4, // scaling up by 4
@@ -190,7 +190,7 @@ Absolute `.clu` directory where the pids live.
 #### options
 The options the cluster was started with. Example:
 
-``` JSON
+``` JavaScript
 {
 	exec: '/tmp/test/app.js',
 	workers: 2,
@@ -222,5 +222,5 @@ clu.use(clu.repl());
 contact me if you create any :)
 
 
-## Licence
+## License
 MIT

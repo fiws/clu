@@ -131,9 +131,13 @@ describe("clu", function(){
 	describe(".stopWorkers()", function(){
 		it("should stop all workers", function(done){
 			clu.stopWorkers(function(){
-				var status = clu.status();
-				should(status.workers.active).be.equal(0);
-				done();
+				// the cluster.disconnect cb gets called to early by node 0.11
+				setTimeout(function(){
+					var status = clu.status();
+					should(status.workers.active).be.equal(0);
+					done();
+				}, 100);
+
 			});
 		});
 	});
