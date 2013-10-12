@@ -14,6 +14,7 @@ var program = require('commander');
 
 var multimeter = require('multimeter');
 var multi = multimeter(process);
+process.stdin.unpipe(multi.charm);
 //var inquirer = require('inquirer');
 
 var cluPath = "./.clu";
@@ -85,8 +86,9 @@ program
 	.command('repl')
 	.description('Throws you inside a REPL')
 	.action(function(){
-		socket.removeAllListeners("close"); // u might call that a bad hack
-		
+		// socket.removeAllListeners("close"); // u might call that a bad hack
+		// process.stdin.unpipe(multi.charm);
+
 		socket.end(); // end protcol socket. we're in repl now!
 		require("./lib/telnet-client");
 	});
@@ -205,11 +207,6 @@ socket.data("done", function(data){
 
 });
 
-socket.on("close", function(){
-	// otherwise process will keep running
-	multi.charm.cursor(true);
-	multi.write('\n').destroy();
-});
 
 // if master is not running
 socket.on("error", function(err){
