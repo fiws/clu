@@ -35,7 +35,7 @@ clu.createCluster = function(options){
 		silent: false,
 		silentWorkers: true,
 		cli: true,
-		socket: require("os").platform() === "windows" ? 13872 : 'clu.sock'
+		socket: require("os").platform() === "win32" ? 13872 : 'clu.sock'
 	});
 
 
