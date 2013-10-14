@@ -8,8 +8,7 @@ require('colors');
 // event emitter
 var clu = new events.EventEmitter();
 module.exports = clu;
-
-// clu.tasks = new events.EventEmitter(); // unused for now
+clu.cluster = cluster;
 
 var logger = require('./lib/logger'); // own crappy logger
 clu.logger = logger; // expose it
@@ -21,6 +20,8 @@ var exiting = false;
 
 // built in plugins
 clu.repl = require('./lib/repl');
+
+clu.commandLine = require('./commandLine');
 
 clu.createCluster = function(options){
 
@@ -63,7 +64,7 @@ clu.createCluster = function(options){
 	if (options.cli && process.argv[2]){
 		cli = true;
 		return process.nextTick(function(){
-			require('./commandLine').start(options);
+			clu.commandLine.start(options);
 		});
 	}
 
@@ -157,9 +158,5 @@ var use = clu.use = function(module){
 };
 
 
-
-clu.cluster = cluster;
-
-
 // global install or node clu
-if(require.main === module) require('./commandLine').start();
+if(require.main === module) clu.commandLine.start();
