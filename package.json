@@ -1,10 +1,10 @@
 {
   "name": "clu",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Manage your node cluster. With zero downtime",
   "main": "clu.js",
   "scripts": {
-    "test": "mocha --reporter spec test"
+    "test": "grunt test"
   },
   "keywords": [
     "cluster",
