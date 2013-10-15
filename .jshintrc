@@ -1,0 +1,15 @@
+{
+  "browser": false,
+  "esnext": true,
+  "globals": {
+  },
+  "node": true,
+  "globalstrict": false,
+  "quotmark": false,
+  "smarttabs": true,
+  "trailing": true,
+  "undef": false,
+  "unused": false,
+  "bitwise": true,
+  "maxdepth": 5
+}
