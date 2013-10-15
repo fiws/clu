@@ -4,7 +4,7 @@
   "description": "Manage your node cluster. With zero downtime",
   "main": "clu.js",
   "scripts": {
-    "test": "grunt test"
+    "test": "node ./node_modules/.bin/grunt test"
   },
   "keywords": [
     "cluster",
@@ -30,7 +30,8 @@
     "mocha": "~1.13.0",
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.6.4",
-    "grunt-mocha-test": "~0.7.0"
+    "grunt-mocha-test": "~0.7.0",
+    "grunt-cli": "~0.1.9"
   },
   "repository": {
     "type": "git",
