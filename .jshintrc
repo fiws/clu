@@ -11,5 +11,6 @@
   "undef": false,
   "unused": false,
   "bitwise": true,
-  "maxdepth": 5
+  "maxdepth": 5,
+  "maxlen": 100
 }
