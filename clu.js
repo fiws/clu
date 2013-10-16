@@ -63,7 +63,9 @@ clu.createCluster = function(options){
 
 	// check if running like 'node server <verb>' and cli is enabled
 	if (options.cli && process.argv[2]){
-		cli = true;
+		// process.nextTick forces us to set started manually
+		clu.commandLine.started = true;
+
 		return process.nextTick(function(){
 			clu.commandLine.start(options);
 		});
@@ -153,8 +155,10 @@ clu.createCluster = function(options){
 };
 
 var use = clu.use = function(module){
+	// we don't require plugins in cli
 	if (clu.commandLine.started === true) return;
 	module.call(clu, clu);
+	logger.debug("Loaded a plugin");
 };
 
 
