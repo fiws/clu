@@ -8,6 +8,7 @@ require('colors');
 // event emitter
 var clu = new events.EventEmitter();
 clu.cluster = cluster;
+clu.plugins = {};
 
 module.exports = clu;
 
@@ -33,7 +34,8 @@ clu.createCluster = function(options){
 		silent: false,
 		silentWorkers: true,
 		cli: true,
-		socket: require("os").platform() === "win32" ? 13872 : 'clu.sock'
+		socket: require("os").platform() === "win32" ? 13872 : 'clu.sock',
+		stopTimeout: 1000
 	});
 
 
@@ -45,7 +47,7 @@ clu.createCluster = function(options){
 	// set clu socket
 	// this is gonna be used by the command line
 	if (_.isString(options.socket) && options.socket[0] !== "/"){
-		 options.socket = clu.dir + options.socket;
+		options.socket = clu.dir + options.socket;
 	}
 
 	// absolute path (?)
@@ -99,6 +101,7 @@ clu.createCluster = function(options){
 
 	// Without this it wont delete the master.pid
 	process.on('uncaughtException', function(err){
+		console.log("ERR".red);
 		console.log(err.stack);
 		process.exit(1);
 	});
