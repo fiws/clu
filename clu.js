@@ -7,8 +7,9 @@ require('colors');
 
 // event emitter
 var clu = new events.EventEmitter();
-module.exports = clu;
 clu.cluster = cluster;
+
+module.exports = clu;
 
 var logger = require('./lib/logger'); // own crappy logger
 clu.logger = logger; // expose it
@@ -152,7 +153,7 @@ clu.createCluster = function(options){
 };
 
 var use = clu.use = function(module){
-	if (cli === true) return;
+	if (clu.commandLine.started === true) return;
 	module.call(clu, clu);
 };
 
