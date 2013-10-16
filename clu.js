@@ -43,7 +43,9 @@ clu.createCluster = function(options){
 
 	// set clu socket
 	// this is gonna be used by the command line
-	if (_.isString(options.socket) && options.socket[0] !== "/") options.socket = clu.dir + options.socket;
+	if (_.isString(options.socket) && options.socket[0] !== "/"){
+		 options.socket = clu.dir + options.socket;
+	}
 
 	// absolute path (?)
 	if (options.exec[0] === "/"){
@@ -51,7 +53,9 @@ clu.createCluster = function(options){
 	} else {
 		options.exec = path.resolve(path.dirname(process.argv[1]) + "/" + options.exec);
 	}
-	if (!fs.existsSync(options.exec) && !fs.existsSync(options.exec + ".js")) throw new Error(options.exec + " was not found!");
+	if (!fs.existsSync(options.exec) && !fs.existsSync(options.exec + ".js")){
+		throw new Error(options.exec + " was not found!");
+	}
 
 	// expose options
 	clu.options = options;
@@ -79,7 +83,7 @@ clu.createCluster = function(options){
 		// TODO: check if master process is running
 		if(options.forceStart !== true) throw new Error("master seems to be already running");
 		else fs.unlinkSync(pidsDir + "/master.pid"); // ignore and delete master.pid
-	} 
+	}
 
 	process.on('exit', function(){
 		// delete master pid
