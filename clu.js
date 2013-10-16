@@ -13,15 +13,11 @@ clu.cluster = cluster;
 var logger = require('./lib/logger'); // own crappy logger
 clu.logger = logger; // expose it
 
-// states
-var cli = false;
-var exiting = false;
-
 
 // built in plugins
 clu.repl = require('./lib/repl');
 
-clu.commandLine = require('./commandLine');
+clu.commandLine = require('./lib/commandLine');
 
 clu.createCluster = function(options){
 
@@ -137,14 +133,13 @@ clu.createCluster = function(options){
 	});
 
 	cluster.on('disconnect', function(worker) {
-		if (worker.suicide === true || exiting === true) return;
+		if (worker.suicide === true) return;
 		logger.warn('Worker #%s has disconnected. respawning...'.red, worker.id);
 		cluster.fork();
 	});
 
 	// Ctrl + C
 	process.on('SIGINT', function(){
-		exiting = true;
 		cluster.disconnect(function(){
 			process.nextTick(process.exit);
 		});
