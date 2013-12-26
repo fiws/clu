@@ -1,6 +1,6 @@
 {
   "name": "clu",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Manage your node cluster. With zero downtime",
   "main": "clu.js",
   "scripts": {
@@ -17,21 +17,21 @@
   "license": "MIT",
   "dependencies": {
     "colors": "~0.6.2",
-    "lodash": "~2.2.1",
-    "commander": "~2.0.0",
+    "lodash": "~2.4.1",
+    "commander": "~2.1.0",
     "async": "~0.2.9",
     "mkdirp": "~0.3.5",
     "nssocket": "~0.5.1",
-    "moment": "~2.3.0",
+    "moment": "~2.5.0",
     "multimeter": "~0.1.1"
   },
   "devDependencies": {
-    "should": "~2.0.1",
-    "mocha": "~1.13.0",
+    "should": "~2.1.1",
+    "mocha": "~1.16.2",
     "grunt": "~0.4.1",
-    "grunt-contrib-jshint": "~0.6.4",
-    "grunt-mocha-test": "~0.7.0",
-    "grunt-cli": "~0.1.9"
+    "grunt-contrib-jshint": "~0.8.0",
+    "grunt-mocha-test": "~0.8.1",
+    "grunt-cli": "~0.1.11"
   },
   "repository": {
     "type": "git",
