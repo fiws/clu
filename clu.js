@@ -56,6 +56,8 @@ clu.createCluster = function(options){
 	} else {
 		options.exec = path.resolve(path.dirname(process.argv[1]) + "/" + options.exec);
 	}
+
+	// TODO: don't use existsSync!
 	if (!fs.existsSync(options.exec) && !fs.existsSync(options.exec + ".js")){
 		throw new Error(options.exec + " was not found!");
 	}
@@ -75,15 +77,17 @@ clu.createCluster = function(options){
 
 	// options for logging
 	if (options.silent === true) logger.silent = true;
-	if (options.verbose === true) logger.verbose = true; // won't to anything
+	if (options.verbose === true) logger.verbose = true; // won't do anything
 
 
 	// PIDS
 	var pidsDir = cd + "pids";
+	// TODO: don't use existsSync!
 	if (!fs.existsSync(pidsDir)){
 		var mkdirp = require("mkdirp");
 		mkdirp.sync(pidsDir);
 	}
+	// TODO: don't use existsSync!
 	if (fs.existsSync(pidsDir + "/master.pid")){
 		// TODO: check if master process is running
 		if(options.forceStart !== true) throw new Error("master seems to be already running");
@@ -120,7 +124,6 @@ clu.createCluster = function(options){
 
 	// api
 	use(require('./lib/api')());
-
 
 	// Finally: Fork the workers
 	clu.scaleUp(options.workers);
