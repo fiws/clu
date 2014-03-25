@@ -1,10 +1,10 @@
 {
   "name": "clu",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "Manage your node cluster. With zero downtime",
   "main": "clu.js",
   "scripts": {
-    "test": "node ./node_modules/.bin/grunt test"
+    "test": "node ./node_modules/.bin/gulp test"
   },
   "keywords": [
     "cluster",
@@ -28,10 +28,10 @@
   "devDependencies": {
     "should": "~3.1.2",
     "mocha": "~1.17.1",
-    "grunt": "~0.4.1",
-    "grunt-contrib-jshint": "~0.8.0",
-    "grunt-mocha-test": "~0.9.0",
-    "grunt-cli": "~0.1.13"
+    "gulp": "~3.5.6",
+    "gulp-mocha": "~0.4.1",
+    "gulp-jshint": "~1.5.1",
+    "jshint-stylish": "~0.1.5"
   },
   "repository": {
     "type": "git",
