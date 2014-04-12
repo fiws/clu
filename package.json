@@ -16,14 +16,14 @@
   "author": "Filip Weiss <me@fiws.net>",
   "license": "MIT",
   "dependencies": {
-    "colors": "~0.6.2",
     "lodash": "~2.4.1",
     "commander": "~2.1.0",
     "async": "~0.2.10",
     "mkdirp": "~0.3.5",
     "nssocket": "~0.5.1",
     "moment": "~2.5.1",
-    "multimeter": "~0.1.1"
+    "multimeter": "~0.1.1",
+    "chalk": "^0.4.0"
   },
   "devDependencies": {
     "should": "~3.1.4",

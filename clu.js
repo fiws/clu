@@ -3,7 +3,7 @@ var events = require('events');
 var fs = require('fs');
 var _ = require('lodash');
 var cluster = require('cluster');
-require('colors');
+var chalk = require('chalk');
 
 // event emitter
 var clu = new events.EventEmitter();
@@ -105,7 +105,7 @@ clu.createCluster = function(options){
 
 	// Without this it wont delete the master.pid
 	process.on('uncaughtException', function(err){
-		console.log("ERR".red);
+		console.log(chalk.red("ERR"));
 		console.log(err.stack);
 		process.exit(1);
 	});
@@ -131,11 +131,11 @@ clu.createCluster = function(options){
 
 	// Listeners
 	cluster.on('exit', function(worker) {
-		logger.debug("Worker %s exited (PID %s)".yellow , worker.id, worker.process.pid);
+		logger.debug(chalk.yellow("Worker %s exited (PID %s)") , worker.id, worker.process.pid);
 	});
 
 	cluster.on('online', function(worker) {
-		logger.debug("Worker %s started (PID %s)".green , worker.id, worker.process.pid);
+		logger.debug(chalk.green("Worker %s started (PID %s)") , worker.id, worker.process.pid);
 	});
 
 	cluster.on('listening', function(worker) {
@@ -147,7 +147,7 @@ clu.createCluster = function(options){
 
 	cluster.on('disconnect', function(worker) {
 		if (worker.suicide === true) return;
-		logger.warn('Worker #%s has disconnected. respawning...'.red, worker.id);
+		logger.warn(chalk.red('Worker #%s has disconnected. respawning...'), worker.id);
 		cluster.fork();
 	});
 
