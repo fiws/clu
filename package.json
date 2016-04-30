@@ -1,6 +1,6 @@
 {
   "name": "clu",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "description": "Manage your node cluster. With zero downtime",
   "main": "clu.js",
   "scripts": {
@@ -16,22 +16,22 @@
   "author": "Filip Weiss <me@fiws.net>",
   "license": "MIT",
   "dependencies": {
-    "chalk": "^0.4.0",
+    "chalk": "^1.0.0",
     "commander": "^2.2.0",
-    "mkdirp": "^0.3.5",
-    "async": "^0.7.0",
-    "lodash": "^2.4.1",
+    "mkdirp": "^0.5.1",
+    "async": "^1.0.0",
+    "lodash": "^4.11.1",
     "multimeter": "^0.1.1",
-    "nssocket": "^0.5.1",
+    "nssocket": "^0.6.0",
     "moment": "^2.6.0"
   },
   "devDependencies": {
-    "should": "~3.1.4",
-    "mocha": "~1.18.2",
-    "gulp": "~3.5.6",
-    "gulp-mocha": "~0.4.1",
-    "gulp-jshint": "~1.5.1",
-    "jshint-stylish": "~0.1.5"
+    "should": "^3.1.4",
+    "mocha": "^1.18.2",
+    "gulp": "^3.5.6",
+    "gulp-mocha": "^0.4.1",
+    "gulp-jshint": "^1.5.1",
+    "jshint-stylish": "^0.1.5"
   },
   "repository": {
     "type": "git",
