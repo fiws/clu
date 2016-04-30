@@ -1,6 +1,7 @@
 clu
 ========
-*cluster without ster... name might change - Still under development!*
+
+** UNMAINTAINED – But turns out this module still works on node 6 **
 
 A cluster manager with a built in CLI and a simple API for plugins.
 clu will spawn the requested number of workers, which will share the same port. This way the load gets distributed across all workers and multiple cores can be used effectively. It uses the [node cluster API](http://nodejs.org/api/cluster.html) to do this.
