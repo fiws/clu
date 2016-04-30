@@ -1,7 +1,7 @@
 clu
 ========
 
-** UNMAINTAINED – But turns out this module still works on node 6 **
+**UNMAINTAINED** – But turns out this module still works with node 6
 
 A cluster manager with a built in CLI and a simple API for plugins.
 clu will spawn the requested number of workers, which will share the same port. This way the load gets distributed across all workers and multiple cores can be used effectively. It uses the [node cluster API](http://nodejs.org/api/cluster.html) to do this.
@@ -30,16 +30,16 @@ Inspired by [cluster](https://github.com/LearnBoost/cluster).
 2. Create a server.js that starts your app.
 
     ``` JavaScript
-    var clu = require("clu");
+    var clu = require('clu');
 
     clu.createCluster({
-	exec: "./app.js",
-	workers: 2,
-	silent: false,
-	silentWorkers: true,
-	cli: true
+      exec: './app.js',
+      workers: 2,
+      silent: false,
+      silentWorkers: true,
+      cli: true
     });
-    // short: clu.createCluster("./app.js");
+    // short: clu.createCluster('./app.js');
 
     clu.use(clu.repl());
     ```
@@ -61,7 +61,7 @@ You can also start the server with `node server`. This will start the server in 
 ## Plugins
 Plugins can be used like this:
 ``` JavaScript
-var cluDnode = require("clu-dnode");
+var cluDnode = require('clu-dnode');
 clu.use(cluDnode());
 clu.use(clu.repl('myRepl.sock'));
 ```
