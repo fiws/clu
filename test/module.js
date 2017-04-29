@@ -1,60 +1,60 @@
 /* globals describe, it, before */
 var should = require("should");
 
-describe("clu", function(){
+describe("clu", () => {
 	var clu = require("../clu");
-	describe(".createCluster()", function(){
+	describe(".createCluster()", () => {
 
-		it("should exist", function(){
+		it("should exist", () => {
 			should.exist(clu.createCluster);
 		});
 
-		it("should throw without any parameters", function(){
-			(function(){
+		it("should throw without any parameters", () => {
+			((() => {
 				clu.createCluster();
-			}).should.throwError(/not enough parameters/);
+			})).should.throwError(/not enough parameters/);
 		});
 
-		it("should throw if exec option is not set", function(){
-			(function(){
+		it("should throw if exec option is not set", () => {
+			((() => {
 				clu.createCluster({foo: "bar"});
-			}).should.throwError(/needs to be specified/);
+			})).should.throwError(/needs to be specified/);
 		});
 
 
-		it("should throw if exec file does not exist", function(){
-			(function(){
+		it("should throw if exec file does not exist", () => {
+			((() => {
 				clu.createCluster({exec: "typo.js"});
-			}).should.throwError(/not found/);
+			})).should.throwError(/not found/);
 		});
 
-		it("should run with valid exec option", function(done){
-			(function(){
+		it("should run with valid exec option", done => {
+			((() => {
 				clu.createCluster({
 					exec: __dirname + "/../example/app",
 					silent: true,
 					cli: false,
 					workers: 2
 				});
-				clu.cluster.once("listening", function(){
+				clu.cluster.once("listening", () => {
 					done();
 				});
-			}).should.not.throw();
+			})).should.not.throw();
 		});
 
 	});
 
-	describe(".use()", function(){
-		it("should throw if plugin does not exist", function(){
-			(function(){
+	describe(".use()", () => {
+		it("should throw if plugin does not exist", () => {
+			((() => {
 				clu.use(clu.typo());
-			}).should.throw();
+			})).should.throw();
 		});
 	});
 
-	describe(".scaleUp()", function(){
-		it("should scale up", function(done){
-			clu.scaleUp(2, function(){
+	describe(".scaleUp()", () => {
+		it("should scale up", done => {
+			clu.scaleUp(2, () => {
 				var status = clu.status();
 				should(status.workers.active).be.equal(4);
 
@@ -62,38 +62,38 @@ describe("clu", function(){
 			});
 		});
 
-		it("should throw if scaling negative", function(){
-			(function(){
+		it("should throw if scaling negative", () => {
+			((() => {
 				clu.scaleUp(-2);
-			}).should.throwError(/cannot start/);
+			})).should.throwError(/cannot start/);
 		});
 	});
 
-	describe(".scaleDown()", function(){
-		it("should scale down", function(done){
-			clu.scaleDown(2, function(){
+	describe(".scaleDown()", () => {
+		it("should scale down", done => {
+			clu.scaleDown(2, () => {
 				var status = clu.status();
 				should(status.workers.active).be.equal(2);
 				done();
 			});
 		});
 
-		it("should throw if scaling negative", function(){
-			(function(){
+		it("should throw if scaling negative", () => {
+			((() => {
 				clu.scaleDown(-2);
-			}).should.throwError(/cannot stop/);
+			})).should.throwError(/cannot stop/);
 		});
 
-		it("should throw if it cannot stop enough workers", function(){
-			(function(){
+		it("should throw if it cannot stop enough workers", () => {
+			((() => {
 				clu.scaleDown(200);
-			}).should.throwError(/not enough/);
+			})).should.throwError(/not enough/);
 		});
 	});
 
-	describe(".scaleTo()", function(){
-		it("should be able to scale up", function(done){
-			clu.scaleTo(4, function(){
+	describe(".scaleTo()", () => {
+		it("should be able to scale up", done => {
+			clu.scaleTo(4, () => {
 				var status = clu.status();
 				should(status.workers.active).be.equal(4);
 
@@ -101,8 +101,8 @@ describe("clu", function(){
 			});
 		});
 
-		it("should be able to scale down", function(done){
-			clu.scaleTo(3, function(){
+		it("should be able to scale down", done => {
+			clu.scaleTo(3, () => {
 				var status = clu.status();
 				should(status.workers.active).be.equal(3);
 
@@ -110,15 +110,15 @@ describe("clu", function(){
 			});
 		});
 
-		it("should throw if scaling negative", function(){
-			(function(){
+		it("should throw if scaling negative", () => {
+			((() => {
 				clu.scaleTo(-2);
-			}).should.throwError(/cannot scale below 0/);
+			})).should.throwError(/cannot scale below 0/);
 		});
 	});
 
-	describe(".status()", function(){
-		it("should return a status like object", function(){
+	describe(".status()", () => {
+		it("should return a status like object", () => {
 			var status = clu.status();
 
 			status.should.have.properties("workers", "master");
@@ -128,9 +128,9 @@ describe("clu", function(){
 		});
 	});
 
-	describe(".stopWorkers()", function(){
-		it("should stop all workers", function(done){
-			clu.stopWorkers(function(){
+	describe(".stopWorkers()", () => {
+		it("should stop all workers", done => {
+			clu.stopWorkers(() => {
 					var status = clu.status();
 					should(status.workers.active).be.equal(0);
 					done();

@@ -21,7 +21,7 @@ clu.repl = require('./lib/repl');
 
 clu.commandLine = require('./lib/commandLine');
 
-clu.createCluster = function(options){
+clu.createCluster = options => {
 
 	// invalid calls
 	if (!options) throw new Error("not enough parameters");
@@ -70,7 +70,7 @@ clu.createCluster = function(options){
 		// process.nextTick forces us to set started manually
 		clu.commandLine.started = true;
 
-		return process.nextTick(function(){
+		return process.nextTick(() => {
 			clu.commandLine.start(options);
 		});
 	}
@@ -94,7 +94,7 @@ clu.createCluster = function(options){
 		else fs.unlinkSync(pidsDir + "/master.pid"); // ignore and delete master.pid
 	}
 
-	process.on('exit', function(){
+	process.on('exit', () => {
 		// delete master pid
 		try {
 			fs.unlinkSync(cd + "pids/master.pid");
@@ -104,7 +104,7 @@ clu.createCluster = function(options){
 	});
 
 	// Without this it wont delete the master.pid
-	process.on('uncaughtException', function(err){
+	process.on('uncaughtException', err => {
 		console.log(chalk.red("ERR"));
 		console.log(err.stack);
 		process.exit(1);
@@ -130,37 +130,37 @@ clu.createCluster = function(options){
 
 
 	// Listeners
-	cluster.on('exit', function(worker) {
+	cluster.on('exit', worker => {
 		logger.debug(chalk.yellow("Worker %s exited (PID %s)") , worker.id, worker.process.pid);
 	});
 
-	cluster.on('online', function(worker) {
+	cluster.on('online', worker => {
 		logger.debug(chalk.green("Worker %s started (PID %s)") , worker.id, worker.process.pid);
 	});
 
-	cluster.on('listening', function(worker) {
+	cluster.on('listening', worker => {
 		worker.timeStarted = new Date();
 		worker.uptime = function(){
 			return (new Date() - this.timeStarted) / 1000;
 		};
 	});
 
-	cluster.on('disconnect', function(worker) {
+	cluster.on('disconnect', worker => {
 		if (worker.suicide === true) return;
 		logger.warn(chalk.red('Worker #%s has disconnected. respawning...'), worker.id);
 		cluster.fork();
 	});
 
 	// Ctrl + C
-	process.on('SIGINT', function(){
-		cluster.disconnect(function(){
+	process.on('SIGINT', () => {
+		cluster.disconnect(() => {
 			process.nextTick(process.exit);
 		});
 	});
 
 };
 
-var use = clu.use = function(module){
+var use = clu.use = module => {
 	// we don't require plugins in cli
 	if (clu.commandLine.started === true) return;
 	module.call(clu, clu);
